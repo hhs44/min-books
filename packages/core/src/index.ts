@@ -299,6 +299,7 @@ export { parseSettlerDeltaOutput, type SettlerDeltaOutput } from "./agents/settl
 export { FanficCanonImporter, type FanficCanonOutput } from "./agents/fanfic-canon-importer.js";
 export { getFanficDimensionConfig, FANFIC_DIMENSIONS, type FanficDimensionConfig } from "./agents/fanfic-dimensions.js";
 export { buildFanficCanonSection, buildCharacterVoiceProfiles, buildFanficModeInstructions } from "./agents/fanfic-prompt-sections.js";
+export * from "./prompts/index.js";
 
 // Utils
 export { isNewLayoutBook } from "./utils/outline-paths.js";
