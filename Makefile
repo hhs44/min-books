@@ -1,4 +1,4 @@
-.PHONY: help install dev build test lint typecheck clean up down logs ps
+.PHONY: help install dev build test lint typecheck clean up down logs ps migrate
 
 # 默认目标
 help:
@@ -11,6 +11,7 @@ help:
 	@echo "  make typecheck   - 运行 mypy"
 	@echo "  make lint        - 运行 ruff"
 	@echo "  make clean       - 清理临时文件"
+	@echo "  make migrate     - 跑 Alembic 迁移(创建 shared.* / llm.* schema)"
 
 install:
 	uv sync --all-packages
@@ -19,6 +20,7 @@ up:
 	docker compose -f infrastructure/docker-compose.yml up -d
 	@echo "等待服务启动..."
 	@sleep 5
+	@make migrate
 	@make ps
 
 down:
@@ -32,6 +34,9 @@ ps:
 
 build:
 	docker compose -f infrastructure/docker-compose.yml build
+
+migrate:
+	docker compose -f infrastructure/docker-compose.yml run --rm migrate
 
 test:
 	uv run --all-packages pytest

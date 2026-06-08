@@ -246,6 +246,22 @@ services:
     depends_on:
       - gateway
 
+  # === Alembic migration runner(oneshot,无端口)===
+  # 用法:`make migrate` 或 `docker compose run --rm migrate`
+  # 跑完会 Exited (0),留在 `docker compose ps` 列表里
+  migrate:
+    build:
+      context: ..
+      dockerfile: services/state-service/Dockerfile
+      args:
+        SERVICE_NAME: state-service
+    command: ["sh", "-c", "uv run --no-sync alembic upgrade head"]
+    env_file: ../.env
+    working_dir: /app/services/state-service
+    depends_on:
+      postgres: { condition: service_healthy }
+    restart: "no"
+
 volumes:
   pgdata:
   natsdata:
