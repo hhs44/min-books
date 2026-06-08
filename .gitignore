@@ -28,3 +28,43 @@ books/
 inkos.json
 prompt/
 CLAUDE.md
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+.coverage.*
+*.egg-info/
+dist/
+build/
+
+# uv
+.uv-cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Docker
+.docker-volumes/
+data/
+
+# 运行时生成
+.secrets/
+*.log
+logs/
+
+# 服务特定
+services/*/migrations/versions/__pycache__/
