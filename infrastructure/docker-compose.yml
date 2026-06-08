@@ -80,8 +80,11 @@ services:
     build:
       context: ..
       dockerfile: services/gateway/Dockerfile
+      args:
+        SERVICE_NAME: gateway
     environment:
       OTEL_SERVICE_NAME: gateway
+      SERVICE_PORT: "8000"
       JWT_SECRET: ${JWT_SECRET}
       SERVICE_SECRET: ${SERVICE_SECRET}
       ALLOW_LOOPBACK_BYPASS: ${ALLOW_LOOPBACK_BYPASS:-true}
@@ -99,8 +102,11 @@ services:
     build:
       context: ..
       dockerfile: services/state-service/Dockerfile
+      args:
+        SERVICE_NAME: state-service
     environment:
       OTEL_SERVICE_NAME: state-service
+      SERVICE_PORT: "8007"
       SERVICE_SECRET: ${SERVICE_SECRET}
     env_file: ../.env
     ports:
@@ -114,8 +120,11 @@ services:
     build:
       context: ..
       dockerfile: services/llm-gateway/Dockerfile
+      args:
+        SERVICE_NAME: llm-gateway
     environment:
       OTEL_SERVICE_NAME: llm-gateway
+      SERVICE_PORT: "8006"
       SERVICE_SECRET: ${SERVICE_SECRET}
     env_file: ../.env
     ports:
@@ -130,8 +139,11 @@ services:
     build:
       context: ..
       dockerfile: services/notification-service/Dockerfile
+      args:
+        SERVICE_NAME: notification-service
     environment:
       OTEL_SERVICE_NAME: notification-service
+      SERVICE_PORT: "8008"
       SERVICE_SECRET: ${SERVICE_SECRET}
     env_file: ../.env
     ports:
@@ -146,8 +158,11 @@ services:
     build:
       context: ..
       dockerfile: services/agent-planner/Dockerfile
+      args:
+        SERVICE_NAME: agent-planner
     environment:
       OTEL_SERVICE_NAME: agent-planner-service
+      SERVICE_PORT: "8003"
       SERVICE_SECRET: ${SERVICE_SECRET}
     env_file: ../.env
     ports:
@@ -163,8 +178,11 @@ services:
     build:
       context: ..
       dockerfile: services/agent-writer/Dockerfile
+      args:
+        SERVICE_NAME: agent-writer
     environment:
       OTEL_SERVICE_NAME: agent-writer-service
+      SERVICE_PORT: "8004"
       SERVICE_SECRET: ${SERVICE_SECRET}
     env_file: ../.env
     ports:
@@ -180,8 +198,11 @@ services:
     build:
       context: ..
       dockerfile: services/agent-reviewer/Dockerfile
+      args:
+        SERVICE_NAME: agent-reviewer
     environment:
       OTEL_SERVICE_NAME: agent-reviewer-service
+      SERVICE_PORT: "8005"
       SERVICE_SECRET: ${SERVICE_SECRET}
     env_file: ../.env
     ports:
@@ -198,8 +219,11 @@ services:
     build:
       context: ..
       dockerfile: services/pipeline-orchestrator/Dockerfile
+      args:
+        SERVICE_NAME: pipeline-orchestrator
     environment:
       OTEL_SERVICE_NAME: pipeline-orchestrator
+      SERVICE_PORT: "8002"
       SERVICE_SECRET: ${SERVICE_SECRET}
     env_file: ../.env
     ports:

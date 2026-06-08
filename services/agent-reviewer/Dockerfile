@@ -3,6 +3,8 @@ ARG SERVICE_NAME=agent-reviewer
 
 FROM python:3.11-slim-bookworm AS base
 
+ARG SERVICE_NAME
+
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
@@ -19,7 +21,7 @@ COPY shared/ ./shared/
 COPY services/${SERVICE_NAME}/ ./services/${SERVICE_NAME}/
 
 # 安装依赖
-RUN uv sync --frozen --no-dev
+RUN cd services/${SERVICE_NAME} && uv sync --frozen
 
 # 复制其余代码
 COPY services/${SERVICE_NAME}/app ./app
@@ -31,6 +33,7 @@ USER minbook
 EXPOSE 8000
 
 HEALTHCHECK --interval=10s --timeout=5s --retries=3 \
-    CMD python -c "import httpx; httpx.get('http://localhost:8000/health').raise_for_status()" || exit 1
+    CMD python -c "import os, httpx; httpx.get(f'http://localhost:{os.environ.get(\"SERVICE_PORT\", \"8000\")}/health').raise_for_status()" || exit 1
 
-CMD ["uv", "run", "--no-sync", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+WORKDIR /app/services/${SERVICE_NAME}
+CMD ["sh", "-c", "uv run --no-sync uvicorn app.main:app --host 0.0.0.0 --port ${SERVICE_PORT:-8000}"]
