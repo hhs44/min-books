@@ -16,7 +16,7 @@ import {
 let projectRoot: string;
 
 beforeAll(async () => {
-  projectRoot = await mkdtemp(join(tmpdir(), "inkos-edit-controller-"));
+  projectRoot = await mkdtemp(join(tmpdir(), "minbook-edit-controller-"));
   await mkdir(join(projectRoot, "books", "harbor", "story", "runtime"), { recursive: true });
   await mkdir(join(projectRoot, "books", "harbor", "chapters"), { recursive: true });
 });

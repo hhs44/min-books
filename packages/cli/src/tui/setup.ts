@@ -145,19 +145,19 @@ export function buildAutoInitMessages(projectName: string, locale: TuiLocale): {
     return {
       initializing: `Initializing project in ${projectName}/ ...`,
       initialized: "Project initialized",
-      envTemplateHeader: "# LLM Configuration — run inkos tui to configure interactively",
+      envTemplateHeader: "# LLM Configuration — run minbook tui to configure interactively",
     };
   }
 
   return {
     initializing: `正在初始化项目：${projectName}/ ...`,
     initialized: "项目已初始化",
-    envTemplateHeader: "# LLM 配置 —— 运行 inkos tui 进行交互式配置",
+    envTemplateHeader: "# LLM 配置 —— 运行 minbook tui 进行交互式配置",
   };
 }
 
 export async function ensureProject(cwd: string): Promise<SetupResult> {
-  const configPath = join(cwd, "inkos.json");
+  const configPath = join(cwd, "minbook.json");
   const hasConfig = await fileExists(configPath);
 
   if (!hasConfig) {
@@ -230,11 +230,11 @@ export async function interactiveLlmSetup(
     const finalService = resolveSetupService(provider, effectiveBaseUrl);
 
     const envContent = [
-      `INKOS_LLM_PROVIDER=${finalProvider}`,
-      ...(finalService ? [`INKOS_LLM_SERVICE=${finalService}`] : []),
-      `INKOS_LLM_BASE_URL=${effectiveBaseUrl}`,
-      `INKOS_LLM_API_KEY=${apiKey.trim()}`,
-      `INKOS_LLM_MODEL=${model.trim()}`,
+      `MINBOOK_LLM_PROVIDER=${finalProvider}`,
+      ...(finalService ? [`MINBOOK_LLM_SERVICE=${finalService}`] : []),
+      `MINBOOK_LLM_BASE_URL=${effectiveBaseUrl}`,
+      `MINBOOK_LLM_API_KEY=${apiKey.trim()}`,
+      `MINBOOK_LLM_MODEL=${model.trim()}`,
     ].join("\n");
 
     if (useGlobal) {
@@ -269,9 +269,9 @@ async function autoInit(cwd: string): Promise<void> {
     version: "0.1.0",
     language: "zh",
     llm: {
-      provider: process.env.INKOS_LLM_PROVIDER ?? "openai",
-      baseUrl: process.env.INKOS_LLM_BASE_URL ?? "",
-      model: process.env.INKOS_LLM_MODEL ?? "",
+      provider: process.env.MINBOOK_LLM_PROVIDER ?? "openai",
+      baseUrl: process.env.MINBOOK_LLM_BASE_URL ?? "",
+      model: process.env.MINBOOK_LLM_MODEL ?? "",
     },
     notify: [],
     daemon: {
@@ -284,7 +284,7 @@ async function autoInit(cwd: string): Promise<void> {
   };
 
   await writeFile(
-    join(cwd, "inkos.json"),
+    join(cwd, "minbook.json"),
     JSON.stringify(config, null, 2),
     "utf-8",
   );
@@ -295,10 +295,10 @@ async function autoInit(cwd: string): Promise<void> {
       join(cwd, ".env"),
       [
         messages.envTemplateHeader,
-        "INKOS_LLM_PROVIDER=openai",
-        "INKOS_LLM_BASE_URL=",
-        "INKOS_LLM_API_KEY=",
-        "INKOS_LLM_MODEL=",
+        "MINBOOK_LLM_PROVIDER=openai",
+        "MINBOOK_LLM_BASE_URL=",
+        "MINBOOK_LLM_API_KEY=",
+        "MINBOOK_LLM_MODEL=",
       ].join("\n"),
       "utf-8",
     );
@@ -322,7 +322,7 @@ async function hasGlobalConfig(): Promise<boolean> {
 async function checkEnvForKey(envPath: string): Promise<boolean> {
   try {
     const content = await readFile(envPath, "utf-8");
-    const match = content.match(/INKOS_LLM_API_KEY=(.+)/);
+    const match = content.match(/MINBOOK_LLM_API_KEY=(.+)/);
     return !!match && match[1]!.trim().length > 0 && !match[1]!.includes("your-api-key");
   } catch {
     return false;
@@ -360,7 +360,7 @@ export async function detectModelInfo(projectRoot: string): Promise<ModelInfo | 
 
 export async function detectProjectLanguage(projectRoot: string): Promise<string | undefined> {
   try {
-    const raw = await readFile(join(projectRoot, "inkos.json"), "utf-8");
+    const raw = await readFile(join(projectRoot, "minbook.json"), "utf-8");
     const parsed = JSON.parse(raw) as { language?: string };
     return parsed.language;
   } catch {
@@ -375,12 +375,12 @@ async function parseEnvModel(envPath: string): Promise<ModelInfo | undefined> {
       const m = content.match(new RegExp(`^${key}=(.+)$`, "m"));
       return m?.[1]?.trim() ?? "";
     };
-    const key = get("INKOS_LLM_API_KEY");
+    const key = get("MINBOOK_LLM_API_KEY");
     if (!key || key.includes("your-api-key")) return undefined;
     return {
-      provider: get("INKOS_LLM_PROVIDER") || "openai",
-      model: get("INKOS_LLM_MODEL") || "unknown",
-      baseUrl: get("INKOS_LLM_BASE_URL") || "",
+      provider: get("MINBOOK_LLM_PROVIDER") || "openai",
+      model: get("MINBOOK_LLM_MODEL") || "unknown",
+      baseUrl: get("MINBOOK_LLM_BASE_URL") || "",
     };
   } catch {
     return undefined;

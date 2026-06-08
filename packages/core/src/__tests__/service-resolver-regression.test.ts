@@ -32,10 +32,10 @@ describe("resolveServiceModel regression — preset baseUrl override", () => {
   let root: string;
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), "inkos-resolver-reg-"));
-    await mkdir(join(root, ".inkos"), { recursive: true });
+    root = await mkdtemp(join(tmpdir(), "minbook-resolver-reg-"));
+    await mkdir(join(root, ".minbook"), { recursive: true });
     await writeFile(
-      join(root, ".inkos", "secrets.json"),
+      join(root, ".minbook", "secrets.json"),
       JSON.stringify({ services: { minimax: { apiKey: "sk-minimax-test" } } }),
     );
   });

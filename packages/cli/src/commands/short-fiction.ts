@@ -14,10 +14,10 @@ import {
   type Logger,
   type OnStreamProgress,
   type ShortFictionReference,
-} from "@actalk/inkos-core";
+} from "@hhs44/minbook-core";
 import { buildPipelineConfig, findProjectRoot, loadConfig, log, logError } from "../utils.js";
 
-export { extractResponsesImageBase64, resolveCoverApiKey } from "@actalk/inkos-core";
+export { extractResponsesImageBase64, resolveCoverApiKey } from "@hhs44/minbook-core";
 
 export const shortCommand = new Command("short")
   .description("Short fiction production workflow");
@@ -43,7 +43,7 @@ shortCommand
   .option("--cover-endpoint <url>", "Exact Responses endpoint for cover generation; overrides --cover-base-url")
   .option("--cover-model <model>", "Image-capable Responses model for cover generation", "gpt-5.5")
   .option("--cover-size <size>", "Cover image size", "1024x1360")
-  .option("--cover-api-key-env <name>", "Env var containing cover API key", "INKOS_COVER_API_KEY")
+  .option("--cover-api-key-env <name>", "Env var containing cover API key", "MINBOOK_COVER_API_KEY")
   .option("--no-cover", "Skip cover image generation")
   .option("--json", "Output JSON")
   .action(async (opts: ShortRunOptions) => {
@@ -211,7 +211,7 @@ async function createShortRuntime(
       onStreamProgress: pipelineConfig.onStreamProgress,
     };
   } catch (e) {
-    if (!String(e).includes("inkos.json not found")) throw e;
+    if (!String(e).includes("minbook.json not found")) throw e;
     const llmConfig = buildEnvLLMConfig(options);
     return {
       client: createLLMClient(llmConfig),
@@ -224,21 +224,21 @@ function buildEnvLLMConfig(options: {
   readonly llmBaseUrl?: string;
   readonly model?: string;
 }): LLMConfig {
-  const baseUrl = options.llmBaseUrl ?? process.env.INKOS_LLM_BASE_URL;
-  const model = options.model ?? process.env.INKOS_LLM_MODEL;
-  if (!baseUrl) throw new Error("LLM base URL is required. Set INKOS_LLM_BASE_URL or pass --llm-base-url.");
-  if (!model) throw new Error("LLM model is required. Set INKOS_LLM_MODEL or pass --model.");
+  const baseUrl = options.llmBaseUrl ?? process.env.MINBOOK_LLM_BASE_URL;
+  const model = options.model ?? process.env.MINBOOK_LLM_MODEL;
+  if (!baseUrl) throw new Error("LLM base URL is required. Set MINBOOK_LLM_BASE_URL or pass --llm-base-url.");
+  if (!model) throw new Error("LLM model is required. Set MINBOOK_LLM_MODEL or pass --model.");
   return {
     provider: "openai",
-    service: process.env.INKOS_LLM_SERVICE ?? "custom",
+    service: process.env.MINBOOK_LLM_SERVICE ?? "custom",
     configSource: "env",
     baseUrl,
-    apiKey: process.env.INKOS_LLM_API_KEY ?? "",
+    apiKey: process.env.MINBOOK_LLM_API_KEY ?? "",
     model,
-    temperature: parseEnvNumber(process.env.INKOS_LLM_TEMPERATURE, 0.1),
-    thinkingBudget: parseEnvInteger(process.env.INKOS_LLM_THINKING_BUDGET, 0),
-    apiFormat: process.env.INKOS_LLM_API_FORMAT === "responses" ? "responses" : "chat",
-    stream: process.env.INKOS_LLM_STREAM === "false" ? false : true,
+    temperature: parseEnvNumber(process.env.MINBOOK_LLM_TEMPERATURE, 0.1),
+    thinkingBudget: parseEnvInteger(process.env.MINBOOK_LLM_THINKING_BUDGET, 0),
+    apiFormat: process.env.MINBOOK_LLM_API_FORMAT === "responses" ? "responses" : "chat",
+    stream: process.env.MINBOOK_LLM_STREAM === "false" ? false : true,
   };
 }
 

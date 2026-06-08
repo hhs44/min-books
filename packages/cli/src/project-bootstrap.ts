@@ -10,7 +10,7 @@ export interface ProjectBootstrapOptions {
 async function hasGlobalConfig(): Promise<boolean> {
   try {
     const content = await readFile(GLOBAL_ENV_PATH, "utf-8");
-    return content.includes("INKOS_LLM_API_KEY=") && !content.includes("your-api-key-here");
+    return content.includes("MINBOOK_LLM_API_KEY=") && !content.includes("your-api-key-here");
   } catch {
     return false;
   }
@@ -89,13 +89,13 @@ function buildProjectEnvTemplate(globalConfigured: boolean): string {
   if (globalConfigured) {
     return [
       "# Project-level LLM overrides (optional)",
-      "# Global config at ~/.inkos/.env will be used by default.",
+      "# Global config at ~/.minbook/.env will be used by default.",
       "# Switch Studio to '使用 Studio 配置' if you want per-project service settings.",
       "# Uncomment below to override for this project only:",
-      "# INKOS_LLM_PROVIDER=openai",
-      "# INKOS_LLM_BASE_URL=",
-      "# INKOS_LLM_API_KEY=",
-      "# INKOS_LLM_MODEL=",
+      "# MINBOOK_LLM_PROVIDER=openai",
+      "# MINBOOK_LLM_BASE_URL=",
+      "# MINBOOK_LLM_API_KEY=",
+      "# MINBOOK_LLM_MODEL=",
       "",
       "# Web search (optional):",
       "# TAVILY_API_KEY=tvly-xxxxx",
@@ -107,12 +107,12 @@ function buildProjectEnvTemplate(globalConfigured: boolean): string {
     "# Optional project-level LLM overrides",
     "# Studio can manage provider / model / key without editing this file.",
     "# Uncomment only if you want this directory to force env-based config:",
-    "# INKOS_LLM_PROVIDER=openai",
-    "# INKOS_LLM_BASE_URL=",
-    "# INKOS_LLM_API_KEY=",
-    "# INKOS_LLM_MODEL=",
-    "# INKOS_LLM_API_FORMAT=chat",
-    "# INKOS_LLM_STREAM=true",
+    "# MINBOOK_LLM_PROVIDER=openai",
+    "# MINBOOK_LLM_BASE_URL=",
+    "# MINBOOK_LLM_API_KEY=",
+    "# MINBOOK_LLM_MODEL=",
+    "# MINBOOK_LLM_API_FORMAT=chat",
+    "# MINBOOK_LLM_STREAM=true",
     "",
     "# Web search (optional):",
     "# TAVILY_API_KEY=tvly-xxxxx",
@@ -126,10 +126,10 @@ export async function initializeProjectDirectory(
 ): Promise<void> {
   const language = options.language ?? "zh";
   const overwriteSupportFiles = options.overwriteSupportFiles ?? true;
-  const configPath = join(projectDir, "inkos.json");
+  const configPath = join(projectDir, "minbook.json");
 
   if (await exists(configPath)) {
-    throw new Error(`inkos.json already exists in ${projectDir}. Use a different directory or delete the existing project.`);
+    throw new Error(`minbook.json already exists in ${projectDir}. Use a different directory or delete the existing project.`);
   }
 
   await mkdir(projectDir, { recursive: true });
@@ -156,7 +156,7 @@ export async function ensureProjectDirectoryInitialized(
   projectDir: string,
   options: Omit<ProjectBootstrapOptions, "overwriteSupportFiles"> = {},
 ): Promise<boolean> {
-  const configPath = join(projectDir, "inkos.json");
+  const configPath = join(projectDir, "minbook.json");
   if (await exists(configPath)) {
     return false;
   }

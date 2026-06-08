@@ -12,7 +12,7 @@ let projectRoot: string;
 
 describe("interaction tools", () => {
   beforeAll(async () => {
-    projectRoot = await mkdtemp(join(tmpdir(), "inkos-core-interaction-tools-"));
+    projectRoot = await mkdtemp(join(tmpdir(), "minbook-core-interaction-tools-"));
     await mkdir(join(projectRoot, "books", "harbor", "story"), { recursive: true });
   });
 

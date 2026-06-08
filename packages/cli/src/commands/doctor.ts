@@ -2,7 +2,7 @@ import { Command } from "commander";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { findProjectRoot, log, logError, GLOBAL_ENV_PATH } from "../utils.js";
-import { fetchWithProxy } from "@actalk/inkos-core";
+import { fetchWithProxy } from "@hhs44/minbook-core";
 import {
   ensureNodeRuntimePinFiles,
   evaluateSqliteMemorySupport,
@@ -126,12 +126,12 @@ export const doctorCommand = new Command("doctor")
       ...await inspectNodeRuntimePinFiles(root),
     });
 
-    // 2. Check inkos.json exists
+    // 2. Check minbook.json exists
     try {
-      await readFile(join(root, "inkos.json"), "utf-8");
-      checks.push({ name: "inkos.json", ok: true, detail: "Found" });
+      await readFile(join(root, "minbook.json"), "utf-8");
+      checks.push({ name: "minbook.json", ok: true, detail: "Found" });
     } catch {
-      checks.push({ name: "inkos.json", ok: false, detail: "Not found. Run 'inkos init'" });
+      checks.push({ name: "minbook.json", ok: false, detail: "Not found. Run 'minbook init'" });
     }
 
     // 3. Check .env exists
@@ -147,19 +147,19 @@ export const doctorCommand = new Command("doctor")
       let hasGlobal = false;
       try {
         const globalContent = await readFile(GLOBAL_ENV_PATH, "utf-8");
-        hasGlobal = globalContent.includes("INKOS_LLM_API_KEY=") && !globalContent.includes("your-api-key-here");
+        hasGlobal = globalContent.includes("MINBOOK_LLM_API_KEY=") && !globalContent.includes("your-api-key-here");
       } catch { /* no global config */ }
       checks.push({
         name: "Global Config",
         ok: hasGlobal,
-        detail: hasGlobal ? `Found (${GLOBAL_ENV_PATH})` : "Not set. Run 'inkos config set-global'",
+        detail: hasGlobal ? `Found (${GLOBAL_ENV_PATH})` : "Not set. Run 'minbook config set-global'",
       });
     }
 
     // 5. Check effective LLM config (Studio project base + env/CLI overlay, or legacy env)
     {
       const { loadConfigWithDiagnostics } = await import("../utils.js");
-      const { isApiKeyOptionalForEndpoint } = await import("@actalk/inkos-core");
+      const { isApiKeyOptionalForEndpoint } = await import("@hhs44/minbook-core");
       let configResult: Awaited<ReturnType<typeof loadConfigWithDiagnostics>> | undefined;
       try {
         configResult = await loadConfigWithDiagnostics({ requireApiKey: false });
@@ -192,7 +192,7 @@ export const doctorCommand = new Command("doctor")
 
     // 5. Check books directory
     try {
-      const { StateManager } = await import("@actalk/inkos-core");
+      const { StateManager } = await import("@hhs44/minbook-core");
       const state = new StateManager(root);
       const books = await state.listBooks();
       checks.push({
@@ -209,7 +209,7 @@ export const doctorCommand = new Command("doctor")
       const { existsSync } = await import("node:fs");
       const hasStructuredState = existsSync(join(root, "books"));
       if (hasStructuredState) {
-        const { StateManager } = await import("@actalk/inkos-core");
+        const { StateManager } = await import("@hhs44/minbook-core");
         const sm = new StateManager(root);
         const bookIds = await sm.listBooks();
         let legacyCount = 0;
@@ -222,7 +222,7 @@ export const doctorCommand = new Command("doctor")
           checks.push({
             name: "Version Migration",
             ok: false,
-            detail: `${legacyCount} book(s) using legacy format (pre-v0.6). Run 'inkos write next' on each to auto-migrate, or re-init with 'inkos init'.`,
+            detail: `${legacyCount} book(s) using legacy format (pre-v0.6). Run 'minbook write next' on each to auto-migrate, or re-init with 'minbook init'.`,
           });
         } else if (bookIds.length > 0) {
           checks.push({
@@ -236,7 +236,7 @@ export const doctorCommand = new Command("doctor")
 
     // 6. API connectivity test
     try {
-      const { createLLMClient, chatCompletion, LLMConfigSchema, isApiKeyOptionalForEndpoint, resolveServiceModelsBaseUrl } = await import("@actalk/inkos-core");
+      const { createLLMClient, chatCompletion, LLMConfigSchema, isApiKeyOptionalForEndpoint, resolveServiceModelsBaseUrl } = await import("@hhs44/minbook-core");
       const { loadConfig } = await import("../utils.js");
 
       let llmConfig;
@@ -249,15 +249,15 @@ export const doctorCommand = new Command("doctor")
         loadDotenv({ path: GLOBAL_ENV_PATH });
         const env = process.env;
         const apiKeyOptional = isApiKeyOptionalForEndpoint({
-          provider: env.INKOS_LLM_PROVIDER,
-          baseUrl: env.INKOS_LLM_BASE_URL,
+          provider: env.MINBOOK_LLM_PROVIDER,
+          baseUrl: env.MINBOOK_LLM_BASE_URL,
         });
-        if ((env.INKOS_LLM_API_KEY || apiKeyOptional) && env.INKOS_LLM_BASE_URL && env.INKOS_LLM_MODEL) {
+        if ((env.MINBOOK_LLM_API_KEY || apiKeyOptional) && env.MINBOOK_LLM_BASE_URL && env.MINBOOK_LLM_MODEL) {
           llmConfig = LLMConfigSchema.parse({
-            provider: env.INKOS_LLM_PROVIDER ?? "custom",
-            baseUrl: env.INKOS_LLM_BASE_URL,
-            apiKey: env.INKOS_LLM_API_KEY ?? "",
-            model: env.INKOS_LLM_MODEL,
+            provider: env.MINBOOK_LLM_PROVIDER ?? "custom",
+            baseUrl: env.MINBOOK_LLM_BASE_URL,
+            apiKey: env.MINBOOK_LLM_API_KEY ?? "",
+            model: env.MINBOOK_LLM_MODEL,
           });
         }
       }
@@ -271,7 +271,7 @@ export const doctorCommand = new Command("doctor")
         checks.push({
           name: "  Hint",
           ok: false,
-          detail: "Run `inkos setup`, `inkos config set-global`, or add LLM settings to the project .env file.",
+          detail: "Run `minbook setup`, `minbook config set-global`, or add LLM settings to the project .env file.",
         });
       } else {
         checks.push({
@@ -352,14 +352,14 @@ export const doctorCommand = new Command("doctor")
       const hints: string[] = [];
 
       if (errMsg.includes("Connection error") || errMsg.includes("ECONNREFUSED") || errMsg.includes("fetch failed")) {
-        hints.push("baseUrl 可能不正确，检查 INKOS_LLM_BASE_URL 是否包含完整路径（如 /v1）");
+        hints.push("baseUrl 可能不正确，检查 MINBOOK_LLM_BASE_URL 是否包含完整路径（如 /v1）");
       }
       if (errMsg.includes("400")) {
         hints.push("检查提供方文档，确认该接口要求 stream=true、stream=false，还是根本不支持 stream");
-        hints.push("检查模型名称是否正确（INKOS_LLM_MODEL）");
+        hints.push("检查模型名称是否正确（MINBOOK_LLM_MODEL）");
       }
       if (errMsg.includes("401")) {
-        hints.push("API Key 无效，检查 INKOS_LLM_API_KEY");
+        hints.push("API Key 无效，检查 MINBOOK_LLM_API_KEY");
       }
 
       checks.push({
@@ -376,7 +376,7 @@ export const doctorCommand = new Command("doctor")
     }
 
     // Output
-    log("\nInkOS Doctor\n");
+    log("\nMinBook Doctor\n");
     for (const check of checks) {
       const icon = check.ok ? "[OK]" : "[!!]";
       log(`  ${icon} ${check.name}: ${check.detail}`);

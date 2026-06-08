@@ -21,7 +21,7 @@ vi.mock("node:fs", () => ({
   createWriteStream: createWriteStreamMock,
 }));
 
-vi.mock("@actalk/inkos-core", () => ({
+vi.mock("@hhs44/minbook-core", () => ({
   Scheduler: class {
     start = schedulerStartMock;
     stop = schedulerStopMock;
@@ -84,7 +84,7 @@ describe("daemon command", () => {
       upCommand.parseAsync(["node", "up", "--quiet"]),
     ).rejects.toMatchObject({ code: 1 });
 
-    const pidPath = join("/project", "inkos.pid");
+    const pidPath = join("/project", "minbook.pid");
     expect(writeFileMock).toHaveBeenCalledWith(pidPath, expect.any(String), "utf-8");
     expect(unlinkMock).toHaveBeenCalledWith(pidPath);
 

@@ -280,7 +280,7 @@ export {
   type CoverProviderPreset,
 } from "./llm/cover-providers.js";
 export { migrateConfig, type MigrationResult } from "./llm/config-migration.js";
-export { getAllEndpoints, getEndpoint, type InkosEndpoint, type InkosModel, type EndpointGroup } from "./llm/providers/index.js";
+export { getAllEndpoints, getEndpoint, type MinbookEndpoint, type MinbookModel, type EndpointGroup } from "./llm/providers/index.js";
 export { probeModelsFromUpstream, type ProbedModel } from "./llm/providers/probe.js";
 
 // Agents

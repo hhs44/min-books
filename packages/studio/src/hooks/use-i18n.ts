@@ -163,9 +163,9 @@ const strings = {
   // Doctor
   "doctor.title": { zh: "环境诊断", en: "Environment Check" },
   "doctor.recheck": { zh: "重新检查", en: "Re-check" },
-  "doctor.inkosJson": { zh: "inkos.json 配置", en: "inkos.json configuration" },
+  "doctor.minbookJson": { zh: "minbook.json 配置", en: "minbook.json configuration" },
   "doctor.projectEnv": { zh: "项目 .env 文件", en: "Project .env file" },
-  "doctor.globalEnv": { zh: "全局 ~/.inkos/.env", en: "Global ~/.inkos/.env" },
+  "doctor.globalEnv": { zh: "全局 ~/.minbook/.env", en: "Global ~/.minbook/.env" },
   "doctor.booksDir": { zh: "书籍目录", en: "Books directory" },
   "doctor.llmApi": { zh: "LLM API 连接", en: "LLM API connectivity" },
   "doctor.connected": { zh: "已连接", en: "Connected" },

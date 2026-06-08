@@ -1,7 +1,7 @@
 {
-  "name": "@actalk/inkos-core",
+  "name": "@hhs44/minbook-core",
   "version": "1.4.1",
-  "description": "InkOS core engine — multi-agent novel writing pipeline with 33-dimension continuity audit, style cloning, and de-AI-ification",
+  "description": "MinBook core engine — multi-agent novel writing pipeline with 33-dimension continuity audit, style cloning, and de-AI-ification",
   "keywords": [
     "ai-novel-writing",
     "ai-writing-agent",
@@ -31,7 +31,7 @@
   "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Narcooo/inkos.git",
+    "url": "https://github.com/Narcooo/minbook.git",
     "directory": "packages/core"
   },
   "scripts": {

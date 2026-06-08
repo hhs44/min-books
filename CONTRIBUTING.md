@@ -3,8 +3,8 @@
 ## Setup
 
 ```bash
-git clone https://github.com/Narcooo/inkos.git
-cd inkos
+git clone https://github.com/Narcooo/minbook.git
+cd minbook
 pnpm install
 pnpm build
 pnpm test
@@ -78,12 +78,12 @@ Keep commits atomic — one logical change per commit. Split new files, interfac
 Tests live next to source in `__tests__/` directories. We use Vitest.
 
 ```bash
-pnpm --filter @actalk/inkos-core test    # Core tests only
-pnpm --filter @actalk/inkos test         # CLI tests only
+pnpm --filter @hhs44/minbook-core test    # Core tests only
+pnpm --filter @hhs44/minbook test         # CLI tests only
 ```
 
 For features touching the LLM pipeline, mock the LLM calls — don't make real API requests in tests.
 
 ## Questions?
 
-Open an issue or check existing ones: https://github.com/Narcooo/inkos/issues
+Open an issue or check existing ones: https://github.com/Narcooo/minbook/issues

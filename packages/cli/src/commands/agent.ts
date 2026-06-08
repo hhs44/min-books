@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { runAgentLoop } from "@actalk/inkos-core";
+import { runAgentLoop } from "@hhs44/minbook-core";
 import { loadConfig, createClient, findProjectRoot, resolveContext, log, logError } from "../utils.js";
 
 export const agentCommand = new Command("agent")

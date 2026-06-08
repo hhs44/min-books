@@ -1,11 +1,14 @@
 """JWT(user 鉴权) + 内部 HMAC 签名(服务间鉴权)。详见 §13。"""
 import hashlib
 import hmac
+import logging
 import time
 from pathlib import Path
 
 import jwt
 from pydantic import BaseModel
+
+logger = logging.getLogger(__name__)
 
 
 class TokenPayload(BaseModel):
@@ -98,6 +101,6 @@ def init_local_token(secret: str, expiry_seconds: int = 365 * 24 * 3600) -> str:
         try:
             verify_jwt_token(existing, secret)
             return existing
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"existing token invalid ({type(e).__name__}); rotating")
     return _create(secret, expiry_seconds)

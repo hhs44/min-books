@@ -4,7 +4,7 @@ import {
   createLLMClient,
   runAgentSession,
   type InteractionSession,
-} from "@actalk/inkos-core";
+} from "@hhs44/minbook-core";
 import { persistProjectSession } from "./session-store.js";
 import { buildPipelineConfig, loadConfig } from "../utils.js";
 
@@ -17,7 +17,7 @@ export async function processTuiAgentInput(params: {
 }) {
   const config = await loadConfig({ requireApiKey: false, projectRoot: params.projectRoot });
   const client = createLLMClient(config.llm);
-  const pipeline = new (await import("@actalk/inkos-core")).PipelineRunner(
+  const pipeline = new (await import("@hhs44/minbook-core")).PipelineRunner(
     buildPipelineConfig(config, params.projectRoot, { quiet: true }),
   );
   const userTimestamp = Date.now();

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { InteractionSession } from "@actalk/inkos-core";
+import type { InteractionSession } from "@hhs44/minbook-core";
 import {
   appendStreamingAssistantChunk,
   createOptimisticUserMessageSession,
@@ -8,7 +8,7 @@ import {
 function createSession(): InteractionSession {
   return {
     sessionId: "session-1",
-    projectRoot: "/tmp/inkos-demo",
+    projectRoot: "/tmp/minbook-demo",
     activeBookId: "harbor",
     automationMode: "semi",
     messages: [],

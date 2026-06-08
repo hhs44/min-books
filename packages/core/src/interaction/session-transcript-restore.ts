@@ -75,7 +75,7 @@ function toolResultBridgeMessage(timestamp: number): AgentMessage {
     role: "assistant",
     content: [{ type: "text", text: TOOL_RESULT_BRIDGE_TEXT }],
     api: "openai-completions",
-    provider: "inkos",
+    provider: "minbook",
     model: "synthetic-tool-result-bridge",
     usage: emptyUsage,
     stopReason: "stop",

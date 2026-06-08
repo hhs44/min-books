@@ -312,7 +312,7 @@ const ShortFictionRunParams = Type.Object({
     description: "Optional image size, default 1024x1360.",
   })),
   coverApiKeyEnv: Type.Optional(Type.String({
-    description: "Optional env var containing the cover API key. Default INKOS_COVER_API_KEY.",
+    description: "Optional env var containing the cover API key. Default MINBOOK_COVER_API_KEY.",
   })),
 });
 

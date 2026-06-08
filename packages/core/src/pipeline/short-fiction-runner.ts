@@ -336,7 +336,7 @@ async function generateCoverImageArtifact(input: {
     coverModel: input.coverModel,
     coverApiKeyEnv: input.coverApiKeyEnv,
   });
-  const size = input.coverSize || process.env.INKOS_COVER_SIZE || "1024x1360";
+  const size = input.coverSize || process.env.MINBOOK_COVER_SIZE || "1024x1360";
 
   if (request.api === "gemini") {
     const prompt = buildCoverImagePrompt(input.salesPackage);
@@ -404,23 +404,23 @@ export async function resolveCoverGenerationRequest(input: {
   readonly coverModel?: string;
   readonly coverApiKeyEnv?: string;
 }): Promise<ShortFictionCoverRequest> {
-  if (input.coverEndpoint || input.coverBaseUrl || process.env.INKOS_COVER_ENDPOINT || process.env.INKOS_COVER_BASE_URL) {
+  if (input.coverEndpoint || input.coverBaseUrl || process.env.MINBOOK_COVER_ENDPOINT || process.env.MINBOOK_COVER_BASE_URL) {
     const endpoint = resolveCoverEndpoint(input.coverEndpoint, input.coverBaseUrl);
-    const baseUrl = input.coverBaseUrl || process.env.INKOS_COVER_BASE_URL || endpoint
+    const baseUrl = input.coverBaseUrl || process.env.MINBOOK_COVER_BASE_URL || endpoint
       .replace(/\/responses\/?$/u, "")
       .replace(/\/images\/generations\/?$/u, "");
     return {
       api: endpoint.includes("/responses") ? "responses" : "images",
       baseUrl,
       endpoint,
-      model: input.coverModel || process.env.INKOS_COVER_MODEL || "gpt-image-2",
-      apiKey: resolveCoverApiKey(input.coverApiKeyEnv || "INKOS_COVER_API_KEY"),
+      model: input.coverModel || process.env.MINBOOK_COVER_MODEL || "gpt-image-2",
+      apiKey: resolveCoverApiKey(input.coverApiKeyEnv || "MINBOOK_COVER_API_KEY"),
     };
   }
 
   const projectCover = await readProjectCoverConfig(input.root);
   if (!projectCover) {
-    throw new Error("cover endpoint is required. Configure cover generation in Studio or set INKOS_COVER_BASE_URL.");
+    throw new Error("cover endpoint is required. Configure cover generation in Studio or set MINBOOK_COVER_BASE_URL.");
   }
 
   const preset = resolveCoverProviderPreset(projectCover.service);
@@ -442,7 +442,7 @@ export async function resolveCoverGenerationRequest(input: {
 
 async function readProjectCoverConfig(root: string): Promise<{ readonly service: string; readonly model?: string } | undefined> {
   try {
-    const raw = await readFile(join(root, "inkos.json"), "utf-8");
+    const raw = await readFile(join(root, "minbook.json"), "utf-8");
     const parsed = JSON.parse(raw) as { llm?: { cover?: { service?: unknown; model?: unknown } } };
     const service = typeof parsed.llm?.cover?.service === "string" ? parsed.llm.cover.service : "";
     if (!service) return undefined;
@@ -639,11 +639,11 @@ export function resolveCoverApiKey(apiKeyEnv: string): string {
 }
 
 function resolveCoverEndpoint(coverEndpoint?: string, coverBaseUrl?: string): string {
-  const endpoint = coverEndpoint || process.env.INKOS_COVER_ENDPOINT;
+  const endpoint = coverEndpoint || process.env.MINBOOK_COVER_ENDPOINT;
   if (endpoint) return endpoint;
-  const baseUrl = coverBaseUrl || process.env.INKOS_COVER_BASE_URL;
+  const baseUrl = coverBaseUrl || process.env.MINBOOK_COVER_BASE_URL;
   if (!baseUrl) {
-    throw new Error("cover endpoint is required. Set INKOS_COVER_BASE_URL or disable cover generation.");
+    throw new Error("cover endpoint is required. Set MINBOOK_COVER_BASE_URL or disable cover generation.");
   }
   return `${baseUrl.replace(/\/+$/u, "")}/images/generations`;
 }

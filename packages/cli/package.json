@@ -1,5 +1,5 @@
 {
-  "name": "@actalk/inkos",
+  "name": "@hhs44/minbook",
   "version": "1.4.1",
   "description": "Autonomous AI novel writing CLI agent — 10-agent pipeline that writes, audits, and revises novels with continuity tracking. Supports LitRPG, Progression Fantasy, Isekai, Romantasy, Sci-Fi and more.",
   "keywords": [
@@ -21,7 +21,7 @@
   ],
   "type": "module",
   "bin": {
-    "inkos": "dist/index.js"
+    "minbook": "dist/index.js"
   },
   "files": [
     "dist",
@@ -30,11 +30,11 @@
   "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Narcooo/inkos.git",
+    "url": "https://github.com/Narcooo/minbook.git",
     "directory": "packages/cli"
   },
   "scripts": {
-    "prepare:workspace-core": "pnpm --filter @actalk/inkos-core build",
+    "prepare:workspace-core": "pnpm --filter @hhs44/minbook-core build",
     "prepack": "node ../../scripts/prepare-package-for-publish.mjs",
     "postpack": "node ../../scripts/restore-package-json.mjs",
     "prepublishOnly": "node ../../scripts/verify-no-workspace-protocol.mjs .",
@@ -47,8 +47,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@actalk/inkos-core": "workspace:*",
-    "@actalk/inkos-studio": "workspace:*",
+    "@hhs44/minbook-core": "workspace:*",
+    "@hhs44/minbook-studio": "workspace:*",
     "commander": "^13.0.0",
     "dotenv": "^16.4.0",
     "epub-gen-memory": "^1.0.10",

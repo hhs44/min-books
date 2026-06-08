@@ -1,8 +1,11 @@
 """写 audit.audit_log(详见 §13 §8)。"""
 import json
+import logging
 from datetime import datetime
 
 from minbook_db.session import AsyncSessionLocal
+
+logger = logging.getLogger(__name__)
 
 
 async def audit_log(
@@ -32,6 +35,6 @@ async def audit_log(
                 },
             )
             await session.commit()
-    except Exception:
+    except Exception as e:
         # 写 audit 失败不能阻塞主流程
-        pass
+        logger.warning(f"audit log write failed (event_type={event_type}): {type(e).__name__}: {e}")

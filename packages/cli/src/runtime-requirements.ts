@@ -35,7 +35,7 @@ export function formatSqliteMemorySupportWarning(options?: {
   });
   if (result.ok) return null;
 
-  return `Node ${nodeVersion} does not support SQLite memory index; memory.db live sync will fall back to Markdown. Use Node 22+ or run 'inkos doctor'.`;
+  return `Node ${nodeVersion} does not support SQLite memory index; memory.db live sync will fall back to Markdown. Use Node 22+ or run 'minbook doctor'.`;
 }
 
 export async function inspectNodeRuntimePinFiles(root: string): Promise<NodeRuntimePinStatus> {
@@ -62,7 +62,7 @@ export async function inspectNodeRuntimePinFiles(root: string): Promise<NodeRunt
 
   return {
     ok: false,
-    detail: `Missing or outdated: ${missing.join(", ")}. Run 'inkos doctor --repair-node-runtime'.`,
+    detail: `Missing or outdated: ${missing.join(", ")}. Run 'minbook doctor --repair-node-runtime'.`,
     missing,
   };
 }

@@ -46,7 +46,7 @@ import {
   type ProjectConfig,
   type LogSink,
   type LogEntry,
-} from "@actalk/inkos-core";
+} from "@hhs44/minbook-core";
 import { access, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { isAbsolute, join, relative, resolve } from "node:path";
 import { isSafeBookId } from "./safety.js";
@@ -299,7 +299,7 @@ function resolveExternalChatEditPath(root: string, requestedPath: string): { pat
   if (!CHAT_EDIT_ALLOWED_ROOTS.has(first)) {
     throw new ApiError(400, "UNSUPPORTED_CHAT_EDIT_TARGET", "Chat external edits cannot modify source code, config, or arbitrary project files.");
   }
-  if (rel.includes("/.inkos/") || rel.endsWith("/.inkos") || rel.includes("/secrets") || rel.endsWith(".env")) {
+  if (rel.includes("/.minbook/") || rel.endsWith("/.minbook") || rel.includes("/secrets") || rel.endsWith(".env")) {
     throw new ApiError(400, "UNSUPPORTED_CHAT_EDIT_TARGET", "Chat external edits cannot modify secrets or runtime internals.");
   }
   if (!CHAT_EDIT_TEXT_EXTENSIONS.test(rel)) {
@@ -700,13 +700,13 @@ function syncTopLevelLlmMirror(llm: Record<string, unknown>): void {
 }
 
 async function loadRawConfig(root: string): Promise<Record<string, unknown>> {
-  const configPath = join(root, "inkos.json");
+  const configPath = join(root, "minbook.json");
   const raw = await readFile(configPath, "utf-8");
   return JSON.parse(raw) as Record<string, unknown>;
 }
 
 async function saveRawConfig(root: string, config: Record<string, unknown>): Promise<void> {
-  await writeFile(join(root, "inkos.json"), JSON.stringify(config, null, 2), "utf-8");
+  await writeFile(join(root, "minbook.json"), JSON.stringify(config, null, 2), "utf-8");
 }
 
 async function readEnvConfigSummary(path: string): Promise<EnvConfigSummary> {
@@ -723,10 +723,10 @@ async function readEnvConfigSummary(path: string): Promise<EnvConfigSummary> {
       values.set(key, value.trim());
     }
 
-    const provider = values.get("INKOS_LLM_PROVIDER") ?? null;
-    const baseUrl = values.get("INKOS_LLM_BASE_URL") ?? null;
-    const model = values.get("INKOS_LLM_MODEL") ?? null;
-    const apiKey = values.get("INKOS_LLM_API_KEY") ?? "";
+    const provider = values.get("MINBOOK_LLM_PROVIDER") ?? null;
+    const baseUrl = values.get("MINBOOK_LLM_BASE_URL") ?? null;
+    const model = values.get("MINBOOK_LLM_MODEL") ?? null;
+    const apiKey = values.get("MINBOOK_LLM_API_KEY") ?? "";
     const detected = Boolean(provider || baseUrl || model || apiKey);
 
     return {
@@ -1220,7 +1220,7 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
       return c.json({ error: { code: error.code, message: error.message } }, error.status as 400);
     }
     const message = error instanceof Error ? error.message : String(error);
-    if (message.includes("LLM API key not set") || message.includes("INKOS_LLM_API_KEY not set")) {
+    if (message.includes("LLM API key not set") || message.includes("MINBOOK_LLM_API_KEY not set")) {
       return c.json({ error: { code: "LLM_CONFIG_ERROR", message } }, 400);
     }
     console.error("[studio] Unexpected server error", error);
@@ -1337,7 +1337,7 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
   // --- Genres ---
 
   app.get("/api/v1/genres", async (c) => {
-    const { listAvailableGenres, readGenreProfile } = await import("@actalk/inkos-core");
+    const { listAvailableGenres, readGenreProfile } = await import("@hhs44/minbook-core");
     const rawGenres = await listAvailableGenres(root);
     const genres = await Promise.all(
       rawGenres.map(async (g) => {
@@ -1562,7 +1562,7 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
     // can warn users their edits won't reach the runtime.
     // Hotfix: only tag as legacy when the book actually HAS the new layout.
     // Pre-Phase-5 books use story_bible/book_rules as the authoritative source.
-    const { isNewLayoutBook } = await import("@actalk/inkos-core");
+    const { isNewLayoutBook } = await import("@hhs44/minbook-core");
     const legacy = LEGACY_SHIM_FILES.has(file) && await isNewLayoutBook(bookDir);
 
     try {
@@ -1706,7 +1706,7 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
       connected: Boolean(secrets.services[ep.id]?.apiKey),
     })).sort(compareServiceListItems);
 
-    // Add custom services from inkos.json
+    // Add custom services from minbook.json
     try {
       const config = await loadRawConfig(root);
       for (const svc of normalizeServiceConfig((config.llm as Record<string, unknown> | undefined)?.services)) {
@@ -2058,8 +2058,8 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
 
   app.get("/api/v1/project", async (c) => {
     const currentConfig = await loadCurrentProjectConfig({ requireApiKey: false });
-    // Check if language was explicitly set in inkos.json (not just the schema default)
-    const raw = JSON.parse(await readFile(join(root, "inkos.json"), "utf-8"));
+    // Check if language was explicitly set in minbook.json (not just the schema default)
+    const raw = JSON.parse(await readFile(join(root, "minbook.json"), "utf-8"));
     const languageExplicit = "language" in raw && raw.language !== "";
 
     return c.json({
@@ -2094,7 +2094,7 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
 
   app.put("/api/v1/project", async (c) => {
     const updates = await c.req.json<Record<string, unknown>>();
-    const configPath = join(root, "inkos.json");
+    const configPath = join(root, "minbook.json");
     try {
       const raw = await readFile(configPath, "utf-8");
       const existing = JSON.parse(raw);
@@ -2133,7 +2133,7 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
     }
 
     // Hotfix: only tag shim files as legacy when the book has the new layout.
-    const { isNewLayoutBook } = await import("@actalk/inkos-core");
+    const { isNewLayoutBook } = await import("@hhs44/minbook-core");
     const newLayout = await isNewLayoutBook(bookDir);
 
     async function describe(relPath: string): Promise<{ readonly name: string; readonly size: number; readonly preview: string; readonly legacy?: true } | null> {
@@ -2240,7 +2240,7 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
   // --- Logs ---
 
   app.get("/api/v1/logs", async (c) => {
-    const logPath = join(root, "inkos.log");
+    const logPath = join(root, "minbook.log");
     try {
       const content = await readFile(logPath, "utf-8");
       const lines = content.trim().split("\n").slice(-100);
@@ -2903,7 +2903,7 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
 
   app.post("/api/v1/project/language", async (c) => {
     const { language } = await c.req.json<{ language: "zh" | "en" }>();
-    const configPath = join(root, "inkos.json");
+    const configPath = join(root, "minbook.json");
     try {
       const raw = await readFile(configPath, "utf-8");
       const existing = JSON.parse(raw);
@@ -2934,7 +2934,7 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
 
       const content = await readFile(join(chaptersDir, match), "utf-8");
       const currentConfig = await loadCurrentProjectConfig();
-      const { ContinuityAuditor } = await import("@actalk/inkos-core");
+      const { ContinuityAuditor } = await import("@hhs44/minbook-core");
       const auditor = new ContinuityAuditor({
         client: createLLMClient(currentConfig.llm),
         model: currentConfig.llm.model,
@@ -3052,7 +3052,7 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
   app.get("/api/v1/genres/:id", async (c) => {
     const genreId = c.req.param("id");
     try {
-      const { readGenreProfile } = await import("@actalk/inkos-core");
+      const { readGenreProfile } = await import("@hhs44/minbook-core");
       const { profile, body } = await readGenreProfile(root, genreId);
       return c.json({ profile, body });
     } catch (e) {
@@ -3066,7 +3066,7 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
       throw new ApiError(400, "INVALID_GENRE_ID", `Invalid genre ID: "${genreId}"`);
     }
     try {
-      const { getBuiltinGenresDir } = await import("@actalk/inkos-core");
+      const { getBuiltinGenresDir } = await import("@hhs44/minbook-core");
       const { mkdir: mkdirFs, copyFile } = await import("node:fs/promises");
       const builtinDir = getBuiltinGenresDir();
       const projectGenresDir = join(root, "genres");
@@ -3081,13 +3081,13 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
   // --- Model overrides ---
 
   app.get("/api/v1/project/model-overrides", async (c) => {
-    const raw = JSON.parse(await readFile(join(root, "inkos.json"), "utf-8"));
+    const raw = JSON.parse(await readFile(join(root, "minbook.json"), "utf-8"));
     return c.json({ overrides: raw.modelOverrides ?? {} });
   });
 
   app.put("/api/v1/project/model-overrides", async (c) => {
     const { overrides } = await c.req.json<{ overrides: Record<string, unknown> }>();
-    const configPath = join(root, "inkos.json");
+    const configPath = join(root, "minbook.json");
     const raw = JSON.parse(await readFile(configPath, "utf-8"));
     raw.modelOverrides = overrides;
     const { writeFile: writeFileFs } = await import("node:fs/promises");
@@ -3098,13 +3098,13 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
   // --- Notify channels ---
 
   app.get("/api/v1/project/notify", async (c) => {
-    const raw = JSON.parse(await readFile(join(root, "inkos.json"), "utf-8"));
+    const raw = JSON.parse(await readFile(join(root, "minbook.json"), "utf-8"));
     return c.json({ channels: raw.notify ?? [] });
   });
 
   app.put("/api/v1/project/notify", async (c) => {
     const { channels } = await c.req.json<{ channels: unknown[] }>();
-    const configPath = join(root, "inkos.json");
+    const configPath = join(root, "minbook.json");
     const raw = JSON.parse(await readFile(configPath, "utf-8"));
     raw.notify = channels;
     const { writeFile: writeFileFs } = await import("node:fs/promises");
@@ -3127,7 +3127,7 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
       if (!match) return c.json({ error: "Chapter not found" }, 404);
 
       const content = await readFile(join(chaptersDir, match), "utf-8");
-      const { analyzeAITells } = await import("@actalk/inkos-core");
+      const { analyzeAITells } = await import("@hhs44/minbook-core");
       const result = analyzeAITells(content);
       return c.json({ chapterNumber: chapterNum, ...result });
     } catch (e) {
@@ -3149,7 +3149,7 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
     // story_bible.md or book_rules.md does nothing at runtime (the pipeline
     // reads outline/ instead). For pre-Phase-5 books these ARE authoritative.
     if (LEGACY_SHIM_FILES.has(file)) {
-      const { isNewLayoutBook } = await import("@actalk/inkos-core");
+      const { isNewLayoutBook } = await import("@hhs44/minbook-core");
       if (await isNewLayoutBook(bookDir)) {
         return c.json(
           { error: "Legacy compat shim; edit outline/story_frame.md instead" },
@@ -3266,7 +3266,7 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
       const chaptersDir = join(bookDir, "chapters");
       const files = await readdir(chaptersDir);
       const mdFiles = files.filter((f) => f.endsWith(".md") && /^\d{4}/.test(f)).sort();
-      const { analyzeAITells } = await import("@actalk/inkos-core");
+      const { analyzeAITells } = await import("@hhs44/minbook-core");
 
       const results = await Promise.all(
         mdFiles.map(async (f) => {
@@ -3287,7 +3287,7 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
   app.get("/api/v1/books/:id/detect/stats", async (c) => {
     const id = c.req.param("id");
     try {
-      const { loadDetectionHistory, analyzeDetectionInsights } = await import("@actalk/inkos-core");
+      const { loadDetectionHistory, analyzeDetectionInsights } = await import("@hhs44/minbook-core");
       const bookDir = state.bookDir(id);
       const history = await loadDetectionHistory(bookDir);
       const insights = analyzeDetectionInsights(history);
@@ -3402,7 +3402,7 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
     if (!text?.trim()) return c.json({ error: "text is required" }, 400);
 
     try {
-      const { analyzeStyle } = await import("@actalk/inkos-core");
+      const { analyzeStyle } = await import("@hhs44/minbook-core");
       const profile = analyzeStyle(text, sourceName ?? "unknown");
       return c.json(profile);
     } catch (e) {
@@ -3438,7 +3438,7 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
 
     broadcast("import:start", { bookId: id, type: "chapters" });
     try {
-      const { splitChapters } = await import("@actalk/inkos-core");
+      const { splitChapters } = await import("@hhs44/minbook-core");
       const chapters = [...splitChapters(text, splitRegex)];
 
       const pipeline = new PipelineRunner(await buildPipelineConfig());
@@ -3573,10 +3573,10 @@ export function createStudioServer(initialConfig: ProjectConfig, root: string) {
 
   app.get("/api/v1/doctor", async (c) => {
     const { existsSync } = await import("node:fs");
-    const { GLOBAL_ENV_PATH } = await import("@actalk/inkos-core");
+    const { GLOBAL_ENV_PATH } = await import("@hhs44/minbook-core");
 
     const checks = {
-      inkosJson: existsSync(join(root, "inkos.json")),
+      minbookJson: existsSync(join(root, "minbook.json")),
       projectEnv: existsSync(join(root, ".env")),
       globalEnv: existsSync(GLOBAL_ENV_PATH),
       booksDir: existsSync(join(root, "books")),
@@ -3661,6 +3661,6 @@ export async function startStudioServer(
     }
   }
 
-  console.log(`InkOS Studio running on http://localhost:${port}`);
+  console.log(`MinBook Studio running on http://localhost:${port}`);
   serve({ fetch: app.fetch, port });
 }

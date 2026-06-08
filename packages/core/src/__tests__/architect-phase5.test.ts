@@ -179,7 +179,7 @@ describe("ArchitectAgent — Phase 5 prose output", () => {
   let bookDir: string;
 
   beforeEach(async () => {
-    bookDir = await mkdtemp(join(tmpdir(), "inkos-phase5-arch-"));
+    bookDir = await mkdtemp(join(tmpdir(), "minbook-phase5-arch-"));
   });
 
   afterEach(async () => {
@@ -303,7 +303,7 @@ describe("ArchitectAgent — Phase 5 prose output", () => {
 
     expect(chat).toHaveBeenCalledTimes(2);
     const repairMessages = chat.mock.calls[1]?.[0] as Array<{ role: string; content: string }>;
-    expect(repairMessages[0]?.content).toContain("修复 InkOS architect");
+    expect(repairMessages[0]?.content).toContain("修复 MinBook architect");
     expect(repairMessages[1]?.content).toContain("缺失 section");
     expect(out.storyFrame).toContain("这本书讲的是");
     expect(out.bookRules).toContain("version");
@@ -368,7 +368,7 @@ describe("writeFoundationFiles — rhythm file is skipped when rhythmPrinciples 
   let bookDir: string;
 
   beforeEach(async () => {
-    bookDir = await mkdtemp(join(tmpdir(), "inkos-phase5-rhythm-skip-"));
+    bookDir = await mkdtemp(join(tmpdir(), "minbook-phase5-rhythm-skip-"));
   });
 
   afterEach(async () => {

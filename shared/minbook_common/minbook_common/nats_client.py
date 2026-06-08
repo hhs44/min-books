@@ -1,11 +1,14 @@
 """NATS 客户端封装,统一事件发布/订阅。"""
 import json
+import logging
 from typing import Awaitable, Callable
 
 import nats
 from nats.aio.client import Client as NATSClient
 
 from .models.event import MinBookEvent
+
+logger = logging.getLogger(__name__)
 
 
 class MinBookNATS:
@@ -60,8 +63,9 @@ class MinBookNATS:
                 data = json.loads(msg.data.decode("utf-8"))
                 await handler(data)
                 await msg.ack()
-            except Exception:
+            except Exception as e:
                 # 失败 NACK(交给 NATS 重试)
+                logger.warning(f"event handler failed: {type(e).__name__}: {e}")
                 await msg.nak()
 
         return await self.nc.subscribe(subject, cb=cb, queue=queue)

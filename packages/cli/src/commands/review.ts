@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { StateManager, formatLengthCount, readGenreProfile, resolveLengthCountingMode } from "@actalk/inkos-core";
+import { StateManager, formatLengthCount, readGenreProfile, resolveLengthCountingMode } from "@hhs44/minbook-core";
 import { findProjectRoot, resolveBookId, log, logError } from "../utils.js";
 
 export const reviewCommand = new Command("review")
@@ -101,7 +101,7 @@ function parseBookAndChapter(
     }
     return { bookIdArg: args[0], chapterNum: num };
   }
-  throw new Error("Usage: inkos review approve [book-id] <chapter>");
+  throw new Error("Usage: minbook review approve [book-id] <chapter>");
 }
 
 reviewCommand

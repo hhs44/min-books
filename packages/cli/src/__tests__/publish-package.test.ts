@@ -59,7 +59,7 @@ async function extractPackedPackageJson(packageDir: string, packDir: string) {
 
 describe.sequential("publish packaging", () => {
   it("rewrites workspace package versions for canary publishing", async () => {
-    const tempRoot = await mkdtemp(join(tmpdir(), "inkos-version-script-"));
+    const tempRoot = await mkdtemp(join(tmpdir(), "minbook-version-script-"));
     const tempPackagesDir = join(tempRoot, "packages");
     const tempCoreDir = join(tempPackagesDir, "core");
     const tempCliDir = join(tempPackagesDir, "cli");
@@ -70,20 +70,20 @@ describe.sequential("publish packaging", () => {
 
       await writeFile(
         join(tempRoot, "package.json"),
-        `${JSON.stringify({ name: "inkos", version: "0.4.6" }, null, 2)}\n`,
+        `${JSON.stringify({ name: "minbook", version: "0.4.6" }, null, 2)}\n`,
       );
       await writeFile(
         join(tempCoreDir, "package.json"),
-        `${JSON.stringify({ name: "@actalk/inkos-core", version: "0.4.6" }, null, 2)}\n`,
+        `${JSON.stringify({ name: "@hhs44/minbook-core", version: "0.4.6" }, null, 2)}\n`,
       );
       await writeFile(
         join(tempCliDir, "package.json"),
         `${JSON.stringify(
           {
-            name: "@actalk/inkos",
+            name: "@hhs44/minbook",
             version: "0.4.6",
             dependencies: {
-              "@actalk/inkos-core": "workspace:*",
+              "@hhs44/minbook-core": "workspace:*",
               commander: "^13.0.0",
             },
           },
@@ -109,7 +109,7 @@ describe.sequential("publish packaging", () => {
       expect(rootPackageJson.version).toBe("0.4.8-canary.7");
       expect(corePackageJson.version).toBe("0.4.8-canary.7");
       expect(cliPackageJson.version).toBe("0.4.8-canary.7");
-      expect(cliPackageJson.dependencies["@actalk/inkos-core"]).toBe("0.4.8-canary.7");
+      expect(cliPackageJson.dependencies["@hhs44/minbook-core"]).toBe("0.4.8-canary.7");
     } finally {
       await rm(tempRoot, { recursive: true, force: true });
     }
@@ -118,8 +118,8 @@ describe.sequential("publish packaging", () => {
   it("keeps source CLI dependencies linked through the workspace protocol", async () => {
     const cliPackageJson = await sourceCliPackageJsonPromise;
 
-    expect(cliPackageJson.dependencies["@actalk/inkos-core"]).toBe("workspace:*");
-    expect(cliPackageJson.dependencies["@actalk/inkos-studio"]).toBe("workspace:*");
+    expect(cliPackageJson.dependencies["@hhs44/minbook-core"]).toBe("workspace:*");
+    expect(cliPackageJson.dependencies["@hhs44/minbook-studio"]).toBe("workspace:*");
   });
 
   it("verifies publishable manifests before npm publish runs", async () => {
@@ -137,7 +137,7 @@ describe.sequential("publish packaging", () => {
   });
 
   it("allows source workspace protocol manifests when they normalize cleanly for publish", async () => {
-    const tempRoot = await mkdtemp(join(tmpdir(), "inkos-publish-verify-pass-"));
+    const tempRoot = await mkdtemp(join(tmpdir(), "minbook-publish-verify-pass-"));
     const tempPackagesDir = join(tempRoot, "packages");
     const tempCoreDir = join(tempPackagesDir, "core");
     const tempCliDir = join(tempPackagesDir, "cli");
@@ -148,20 +148,20 @@ describe.sequential("publish packaging", () => {
 
       await writeFile(
         join(tempRoot, "package.json"),
-        `${JSON.stringify({ name: "inkos", version: "0.5.1" }, null, 2)}\n`,
+        `${JSON.stringify({ name: "minbook", version: "0.5.1" }, null, 2)}\n`,
       );
       await writeFile(
         join(tempCoreDir, "package.json"),
-        `${JSON.stringify({ name: "@actalk/inkos-core", version: "0.5.1" }, null, 2)}\n`,
+        `${JSON.stringify({ name: "@hhs44/minbook-core", version: "0.5.1" }, null, 2)}\n`,
       );
       await writeFile(
         join(tempCliDir, "package.json"),
         `${JSON.stringify(
           {
-            name: "@actalk/inkos",
+            name: "@hhs44/minbook",
             version: "0.5.1",
             dependencies: {
-              "@actalk/inkos-core": "workspace:*",
+              "@hhs44/minbook-core": "workspace:*",
               commander: "^13.0.0",
             },
           },
@@ -187,7 +187,7 @@ describe.sequential("publish packaging", () => {
   });
 
   it("rejects workspace protocol manifests that normalize to the wrong internal version", async () => {
-    const tempRoot = await mkdtemp(join(tmpdir(), "inkos-publish-verify-fail-"));
+    const tempRoot = await mkdtemp(join(tmpdir(), "minbook-publish-verify-fail-"));
     const tempPackagesDir = join(tempRoot, "packages");
     const tempCoreDir = join(tempPackagesDir, "core");
     const tempCliDir = join(tempPackagesDir, "cli");
@@ -198,20 +198,20 @@ describe.sequential("publish packaging", () => {
 
       await writeFile(
         join(tempRoot, "package.json"),
-        `${JSON.stringify({ name: "inkos", version: "0.5.1" }, null, 2)}\n`,
+        `${JSON.stringify({ name: "minbook", version: "0.5.1" }, null, 2)}\n`,
       );
       await writeFile(
         join(tempCoreDir, "package.json"),
-        `${JSON.stringify({ name: "@actalk/inkos-core", version: "0.5.1" }, null, 2)}\n`,
+        `${JSON.stringify({ name: "@hhs44/minbook-core", version: "0.5.1" }, null, 2)}\n`,
       );
       await writeFile(
         join(tempCliDir, "package.json"),
         `${JSON.stringify(
           {
-            name: "@actalk/inkos",
+            name: "@hhs44/minbook",
             version: "0.5.1",
             dependencies: {
-              "@actalk/inkos-core": "workspace:0.5.0",
+              "@hhs44/minbook-core": "workspace:0.5.0",
             },
           },
           null,
@@ -236,7 +236,7 @@ describe.sequential("publish packaging", () => {
   });
 
   it("replaces workspace dependencies before npm pack", { timeout: CLI_PACK_TEST_TIMEOUT_MS }, async () => {
-    const packDir = await mkdtemp(join(tmpdir(), "inkos-cli-pack-"));
+    const packDir = await mkdtemp(join(tmpdir(), "minbook-cli-pack-"));
 
     try {
       const packedPackageJson = JSON.parse(await extractPackedPackageJson(cliDir, packDir));
@@ -245,15 +245,15 @@ describe.sequential("publish packaging", () => {
       );
       const studioPackageJson = await sourceStudioPackageJsonPromise;
 
-      expect(packedPackageJson.dependencies["@actalk/inkos-core"]).toBe(corePackageJson.version);
-      expect(packedPackageJson.dependencies["@actalk/inkos-studio"]).toBe(studioPackageJson.version);
+      expect(packedPackageJson.dependencies["@hhs44/minbook-core"]).toBe(corePackageJson.version);
+      expect(packedPackageJson.dependencies["@hhs44/minbook-studio"]).toBe(studioPackageJson.version);
     } finally {
       await rm(packDir, { recursive: true, force: true });
     }
   });
 
   it("packs the studio runtime entry alongside the built frontend", { timeout: STUDIO_PACK_TEST_TIMEOUT_MS }, async () => {
-    const packDir = await mkdtemp(join(tmpdir(), "inkos-studio-pack-"));
+    const packDir = await mkdtemp(join(tmpdir(), "minbook-studio-pack-"));
 
     try {
       const tarballPath = await packPackage(studioDir, packDir);

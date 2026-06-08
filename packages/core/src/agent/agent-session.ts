@@ -48,7 +48,7 @@ export interface AgentSessionConfig {
   model: Model<Api> | { provider: string; modelId: string };
   /** Optional API key. When omitted, falls back to env-based key lookup. */
   apiKey?: string;
-  /** Allow the read tool to read absolute paths outside projectRoot/books. Defaults to false; set INKOS_AGENT_ALLOW_SYSTEM_READ=1 to enable. */
+  /** Allow the read tool to read absolute paths outside projectRoot/books. Defaults to false; set MINBOOK_AGENT_ALLOW_SYSTEM_READ=1 to enable. */
   allowSystemFileRead?: boolean;
   /** Optional listener for streaming events (for SSE forwarding). */
   onEvent?: (event: AgentEvent) => void;
@@ -522,7 +522,7 @@ async function runAgentSessionUnlocked(
   const bookId: string | null = config.bookId ? assertSafeBookId(config.bookId) : null;
   const model = resolveModel(config.model);
   const requestedModelIdentity = agentModelIdentity(model);
-  const allowSystemFileRead = config.allowSystemFileRead ?? envFlagEnabled(process.env.INKOS_AGENT_ALLOW_SYSTEM_READ, false);
+  const allowSystemFileRead = config.allowSystemFileRead ?? envFlagEnabled(process.env.MINBOOK_AGENT_ALLOW_SYSTEM_READ, false);
   const cacheKey = agentCacheKey(projectRoot, sessionId);
 
   // ----- Resolve or create Agent -----

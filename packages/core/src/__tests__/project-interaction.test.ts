@@ -16,7 +16,7 @@ let projectRoot: string;
 
 describe("project interaction control", () => {
   beforeAll(async () => {
-    projectRoot = await mkdtemp(join(tmpdir(), "inkos-project-control-"));
+    projectRoot = await mkdtemp(join(tmpdir(), "minbook-project-control-"));
     await mkdir(join(projectRoot, "books", "harbor"), { recursive: true });
     await writeFile(join(projectRoot, "books", "harbor", "book.json"), "{}", "utf-8");
   });
@@ -185,8 +185,8 @@ describe("project interaction control", () => {
   });
 
   it("persists a creation draft across freeform ideation turns", async () => {
-    const ideationRoot = await mkdtemp(join(tmpdir(), "inkos-project-ideation-"));
-    await writeFile(join(ideationRoot, "inkos.json"), JSON.stringify({ language: "zh" }), "utf-8");
+    const ideationRoot = await mkdtemp(join(tmpdir(), "minbook-project-ideation-"));
+    await writeFile(join(ideationRoot, "minbook.json"), JSON.stringify({ language: "zh" }), "utf-8");
     await persistProjectSession(ideationRoot, createProjectSession(ideationRoot));
 
     const tools = {

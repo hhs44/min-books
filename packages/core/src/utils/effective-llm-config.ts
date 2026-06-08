@@ -103,7 +103,7 @@ export async function resolveEffectiveLLMConfig(
     throw new Error(
       configMode === "studio-project"
         ? "Studio LLM API key not set. Open Studio services and save an API key for the selected service."
-        : "INKOS_LLM_API_KEY not set. Run 'inkos config set-global' or add it to project .env file.",
+        : "MINBOOK_LLM_API_KEY not set. Run 'minbook config set-global' or add it to project .env file.",
     );
   }
 
@@ -119,12 +119,12 @@ export async function resolveEffectiveLLMConfig(
 }
 
 async function readProjectConfig(root: string): Promise<Record<string, unknown>> {
-  const configPath = join(root, "inkos.json");
+  const configPath = join(root, "minbook.json");
   try {
     await access(configPath);
   } catch {
     throw new Error(
-      `inkos.json not found in ${root}.\nMake sure you are inside an InkOS project directory (cd into the project created by 'inkos init').`,
+      `minbook.json not found in ${root}.\nMake sure you are inside a MinBook project directory (cd into the project created by 'minbook init').`,
     );
   }
 
@@ -132,7 +132,7 @@ async function readProjectConfig(root: string): Promise<Record<string, unknown>>
   try {
     return JSON.parse(raw) as Record<string, unknown>;
   } catch {
-    throw new Error(`inkos.json in ${root} is not valid JSON. Check the file for syntax errors.`);
+    throw new Error(`minbook.json in ${root} is not valid JSON. Check the file for syntax errors.`);
   }
 }
 
@@ -220,9 +220,9 @@ async function applyCliProjectConfig(
   diagnostics: MutableDiagnostics,
 ): Promise<void> {
   const env = cliOverlayEnv(input.envLayers);
-  const envBaseUrl = stringValue(env.INKOS_LLM_BASE_URL);
-  const envService = stringValue(env.INKOS_LLM_SERVICE) ?? (envBaseUrl ? guessServiceFromBaseUrl(envBaseUrl) : undefined);
-  const envModel = stringValue(env.INKOS_LLM_MODEL);
+  const envBaseUrl = stringValue(env.MINBOOK_LLM_BASE_URL);
+  const envService = stringValue(env.MINBOOK_LLM_SERVICE) ?? (envBaseUrl ? guessServiceFromBaseUrl(envBaseUrl) : undefined);
+  const envModel = stringValue(env.MINBOOK_LLM_MODEL);
   const requestedService = input.cli?.service ?? envService;
   if (input.cli?.service) diagnostics.serviceSource = "cli";
   else if (envService) diagnostics.serviceSource = "env";
@@ -237,9 +237,9 @@ async function applyCliProjectConfig(
     requestedService,
     requestedModel,
     requestedModelSource,
-    envApiKey: allowEnvEndpointOverlay ? stringValue(env.INKOS_LLM_API_KEY) : undefined,
+    envApiKey: allowEnvEndpointOverlay ? stringValue(env.MINBOOK_LLM_API_KEY) : undefined,
     envBaseUrl: allowEnvEndpointOverlay ? envBaseUrl : undefined,
-    envProvider: allowEnvEndpointOverlay ? stringValue(env.INKOS_LLM_PROVIDER) : undefined,
+    envProvider: allowEnvEndpointOverlay ? stringValue(env.MINBOOK_LLM_PROVIDER) : undefined,
     cli: input.cli,
     env,
   });
@@ -254,22 +254,22 @@ async function applyLegacyEnvConfig(
   const env = legacyEnv(input.envLayers);
   llm.configSource = "env";
 
-  if (env.INKOS_LLM_SERVICE) {
-    llm.service = env.INKOS_LLM_SERVICE;
+  if (env.MINBOOK_LLM_SERVICE) {
+    llm.service = env.MINBOOK_LLM_SERVICE;
     diagnostics.serviceSource = "env";
   } else if (typeof llm.service !== "string" || llm.service.length === 0) {
     llm.service = "custom";
   }
 
-  if (env.INKOS_LLM_PROVIDER) llm.provider = env.INKOS_LLM_PROVIDER;
+  if (env.MINBOOK_LLM_PROVIDER) llm.provider = env.MINBOOK_LLM_PROVIDER;
   else if (typeof llm.provider !== "string" || llm.provider.length === 0) llm.provider = "custom";
-  if (env.INKOS_LLM_BASE_URL) llm.baseUrl = env.INKOS_LLM_BASE_URL;
-  if (env.INKOS_LLM_MODEL) {
-    llm.model = env.INKOS_LLM_MODEL;
+  if (env.MINBOOK_LLM_BASE_URL) llm.baseUrl = env.MINBOOK_LLM_BASE_URL;
+  if (env.MINBOOK_LLM_MODEL) {
+    llm.model = env.MINBOOK_LLM_MODEL;
     diagnostics.modelSource = "env";
   }
-  if (env.INKOS_LLM_API_KEY) {
-    llm.apiKey = env.INKOS_LLM_API_KEY;
+  if (env.MINBOOK_LLM_API_KEY) {
+    llm.apiKey = env.MINBOOK_LLM_API_KEY;
     diagnostics.apiKeySource = "env";
   } else if (typeof llm.apiKey !== "string") {
     llm.apiKey = "";
@@ -325,17 +325,17 @@ function applyCommonEnv(
   llm: Record<string, unknown>,
   env: LLMEnvMap,
 ): void {
-  if (env.INKOS_LLM_TEMPERATURE) llm.temperature = Number.parseFloat(env.INKOS_LLM_TEMPERATURE);
-  if (env.INKOS_LLM_THINKING_BUDGET) llm.thinkingBudget = Number.parseInt(env.INKOS_LLM_THINKING_BUDGET, 10);
-  if (env.INKOS_LLM_PROXY_URL) llm.proxyUrl = env.INKOS_LLM_PROXY_URL;
-  if (env.INKOS_LLM_API_FORMAT) llm.apiFormat = env.INKOS_LLM_API_FORMAT;
-  if (env.INKOS_LLM_STREAM) llm.stream = parseBoolean(env.INKOS_LLM_STREAM);
-  if (env.INKOS_DEFAULT_LANGUAGE) config.language = env.INKOS_DEFAULT_LANGUAGE;
+  if (env.MINBOOK_LLM_TEMPERATURE) llm.temperature = Number.parseFloat(env.MINBOOK_LLM_TEMPERATURE);
+  if (env.MINBOOK_LLM_THINKING_BUDGET) llm.thinkingBudget = Number.parseInt(env.MINBOOK_LLM_THINKING_BUDGET, 10);
+  if (env.MINBOOK_LLM_PROXY_URL) llm.proxyUrl = env.MINBOOK_LLM_PROXY_URL;
+  if (env.MINBOOK_LLM_API_FORMAT) llm.apiFormat = env.MINBOOK_LLM_API_FORMAT;
+  if (env.MINBOOK_LLM_STREAM) llm.stream = parseBoolean(env.MINBOOK_LLM_STREAM);
+  if (env.MINBOOK_DEFAULT_LANGUAGE) config.language = env.MINBOOK_DEFAULT_LANGUAGE;
 
   const extraFromEnv: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(env)) {
-    if (key.startsWith("INKOS_LLM_EXTRA_") && value) {
-      extraFromEnv[key.slice("INKOS_LLM_EXTRA_".length)] = parseEnvValue(value);
+    if (key.startsWith("MINBOOK_LLM_EXTRA_") && value) {
+      extraFromEnv[key.slice("MINBOOK_LLM_EXTRA_".length)] = parseEnvValue(value);
     }
   }
   if (Object.keys(extraFromEnv).length > 0) {
@@ -479,8 +479,8 @@ function deriveProviderFromService(service: string): "anthropic" | "openai" | "c
 
 function warnIfStudioIgnoresEnv(layers: LLMEnvLayers, diagnostics: MutableDiagnostics): void {
   const ignored = studioIgnoredEnv(layers);
-  if (Object.keys(ignored).some((key) => key.startsWith("INKOS_LLM_"))) {
-    diagnostics.warnings.push("Studio 运行时不会使用 env 中的 INKOS_LLM_* 配置；请在服务配置页保存 Studio 配置。");
+  if (Object.keys(ignored).some((key) => key.startsWith("MINBOOK_LLM_"))) {
+    diagnostics.warnings.push("Studio 运行时不会使用 env 中的 MINBOOK_LLM_* 配置；请在服务配置页保存 Studio 配置。");
   }
 }
 

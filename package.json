@@ -1,5 +1,5 @@
 {
-  "name": "inkos",
+  "name": "minbook",
   "version": "1.4.1",
   "private": true,
   "description": "Autonomous AI novel writing CLI agent — 10-agent pipeline that writes, audits, and revises novels with continuity tracking",
@@ -18,7 +18,7 @@
   "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Narcooo/inkos"
+    "url": "https://github.com/Narcooo/minbook"
   },
   "scripts": {
     "build": "pnpm -r build",

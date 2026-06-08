@@ -3,7 +3,7 @@ import {
   StateManager,
   createInteractionToolsFromDeps,
   type InteractionRuntimeTools,
-} from "@actalk/inkos-core";
+} from "@hhs44/minbook-core";
 import { buildPipelineConfig, loadConfig } from "../utils.js";
 
 type CliPipelineLike = Pick<PipelineRunner, "writeNextChapter" | "reviseDraft">;

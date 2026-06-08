@@ -14,7 +14,7 @@ describe("interact command", () => {
 
   beforeEach(async () => {
     stdoutSpy = vi.spyOn(process.stdout, "write").mockImplementation(() => true);
-    projectRoot = await mkdtemp(join(tmpdir(), "inkos-interact-cli-"));
+    projectRoot = await mkdtemp(join(tmpdir(), "minbook-interact-cli-"));
     await mkdir(join(projectRoot, "books", "harbor"), { recursive: true });
     await writeFile(join(projectRoot, "books", "harbor", "book.json"), "{}", "utf-8");
     stdoutSpy.mockClear();

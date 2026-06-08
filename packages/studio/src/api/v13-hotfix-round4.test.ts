@@ -24,8 +24,8 @@ const logger = {
   error: vi.fn(),
 };
 
-vi.mock("@actalk/inkos-core", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@actalk/inkos-core")>();
+vi.mock("@hhs44/minbook-core", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@hhs44/minbook-core")>();
 
   class MockStateManager {
     constructor(private readonly root: string) {}
@@ -70,7 +70,7 @@ vi.mock("@actalk/inkos-core", async (importOriginal) => {
     isSafeBookId: actual.isSafeBookId,
     chatCompletion: vi.fn(),
     loadProjectConfig: loadProjectConfigMock,
-    GLOBAL_ENV_PATH: join(tmpdir(), "inkos-global.env"),
+    GLOBAL_ENV_PATH: join(tmpdir(), "minbook-global.env"),
   };
 });
 
@@ -113,7 +113,7 @@ describe("Issue 1 — Studio: old book (no outline/story_frame.md)", () => {
 
   beforeEach(async () => {
     root = await mkdtemp(join(tmpdir(), "studio-old-book-"));
-    await writeFile(join(root, "inkos.json"), JSON.stringify(projectConfig, null, 2), "utf-8");
+    await writeFile(join(root, "minbook.json"), JSON.stringify(projectConfig, null, 2), "utf-8");
     storyDir = join(root, "books", "old-book", "story");
     await mkdir(storyDir, { recursive: true });
     await writeFile(join(storyDir, "story_bible.md"), "# Old Bible\nAuthoritative content", "utf-8");
@@ -174,7 +174,7 @@ describe("Issue 1 — Studio: new book (has outline/story_frame.md)", () => {
 
   beforeEach(async () => {
     root = await mkdtemp(join(tmpdir(), "studio-new-book-"));
-    await writeFile(join(root, "inkos.json"), JSON.stringify(projectConfig, null, 2), "utf-8");
+    await writeFile(join(root, "minbook.json"), JSON.stringify(projectConfig, null, 2), "utf-8");
     storyDir = join(root, "books", "new-book", "story");
     await mkdir(join(storyDir, "outline"), { recursive: true });
     await writeFile(join(storyDir, "outline", "story_frame.md"), "# Frame", "utf-8");

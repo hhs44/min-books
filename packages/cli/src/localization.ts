@@ -1,4 +1,4 @@
-import { formatLengthCount, resolveLengthCountingMode } from "@actalk/inkos-core";
+import { formatLengthCount, resolveLengthCountingMode } from "@hhs44/minbook-core";
 
 export type CliLanguage = "zh" | "en";
 
@@ -69,8 +69,8 @@ export function formatBookCreateFoundationReady(language: CliLanguage): string {
 
 export function formatBookCreateNextStep(language: CliLanguage, bookId: string): string {
   return localize(language, {
-    zh: `下一步：inkos write next ${bookId}`,
-    en: `Next: inkos write next ${bookId}`,
+    zh: `下一步：minbook write next ${bookId}`,
+    en: `Next: minbook write next ${bookId}`,
   });
 }
 
@@ -184,8 +184,8 @@ export function formatImportChaptersComplete(
     }),
     "",
     localize(language, {
-      zh: `运行 "inkos write next ${result.continueBookId}" 继续写作。`,
-      en: `Run "inkos write next ${result.continueBookId}" to continue writing.`,
+      zh: `运行 "minbook write next ${result.continueBookId}" 继续写作。`,
+      en: `Run "minbook write next ${result.continueBookId}" to continue writing.`,
     }),
   ];
 }

@@ -5,9 +5,9 @@
  * - 控制台 / API key：https://ai.gitee.com/dashboard/settings/tokens
  * - API 文档：https://ai.gitee.com/docs/openapi/serverless
  */
-import type { InkosEndpoint } from "../types.js";
+import type { MinbookEndpoint } from "../types.js";
 
-export const GITEEAI: InkosEndpoint = {
+export const GITEEAI: MinbookEndpoint = {
   id: "giteeai",
   label: "Gitee AI",
   group: "aggregator",

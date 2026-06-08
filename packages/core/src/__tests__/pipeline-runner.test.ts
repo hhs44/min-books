@@ -190,7 +190,7 @@ async function createRunnerFixture(
   state: StateManager;
   bookId: string;
 }> {
-  const root = await mkdtemp(join(tmpdir(), "inkos-runner-test-"));
+  const root = await mkdtemp(join(tmpdir(), "minbook-runner-test-"));
   const state = new StateManager(root);
   const bookId = "test-book";
   const now = "2026-03-19T00:00:00.000Z";
@@ -382,7 +382,7 @@ describe("PipelineRunner", () => {
   });
 
   it("initializes control documents during book creation", async () => {
-    const root = await mkdtemp(join(tmpdir(), "inkos-init-book-test-"));
+    const root = await mkdtemp(join(tmpdir(), "minbook-init-book-test-"));
     const bookId = "bootstrap-book";
     const brief = "# Author Intent\n\nKeep the narrative centered on mentor conflict.\n";
     const now = "2026-03-22T00:00:00.000Z";
@@ -438,7 +438,7 @@ describe("PipelineRunner", () => {
   });
 
   it("applies creation-draft overrides while initializing a book", async () => {
-    const root = await mkdtemp(join(tmpdir(), "inkos-init-book-overrides-"));
+    const root = await mkdtemp(join(tmpdir(), "minbook-init-book-overrides-"));
     const bookId = "override-book";
     const book: BookConfig = {
       id: bookId,
@@ -672,7 +672,7 @@ describe("PipelineRunner", () => {
   }, SLOW_PIPELINE_TEST_TIMEOUT_MS);
 
   it("cleans staged files when initBook fails before foundation is complete", async () => {
-    const root = await mkdtemp(join(tmpdir(), "inkos-init-rollback-"));
+    const root = await mkdtemp(join(tmpdir(), "minbook-init-rollback-"));
     const runner = new PipelineRunner({
       client: {
         provider: "openai",

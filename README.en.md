@@ -1,16 +1,16 @@
 <p align="center">
-  <img src="assets/logo.svg" width="120" height="120" alt="InkOS Logo">
-  <img src="assets/inkos-text.svg" width="240" height="65" alt="InkOS">
+  <img src="assets/logo.svg" width="120" height="120" alt="MinBook Logo">
+  <img src="assets/minbook-text.svg" width="240" height="65" alt="MinBook">
 </p>
 
 <h1 align="center">Autonomous Novel Writing AI Agent</h1>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@actalk/inkos"><img src="https://img.shields.io/npm/v/@actalk/inkos.svg?color=cb3837&logo=npm" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/@hhs44/minbook"><img src="https://img.shields.io/npm/v/@hhs44/minbook.svg?color=cb3837&logo=npm" alt="npm version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL%20v3-blue.svg" alt="License: AGPL-3.0"></a>
-  <a href="https://github.com/Narcooo/inkos/stargazers"><img src="https://img.shields.io/github/stars/Narcooo/inkos?style=flat&logo=github&color=yellow" alt="GitHub stars"></a>
-  <a href="https://www.npmjs.com/package/@actalk/inkos"><img src="https://img.shields.io/npm/dm/@actalk/inkos?color=cb3837&logo=npm&label=downloads" alt="npm downloads"></a>
-  <a href="https://clawhub.ai/narcooo/inkos"><img src="https://img.shields.io/badge/🦞%20ClawHub-Skill-FF6B35?labelColor=1a1a1a" alt="ClawHub Skill"></a>
+  <a href="https://github.com/Narcooo/minbook/stargazers"><img src="https://img.shields.io/github/stars/Narcooo/minbook?style=flat&logo=github&color=yellow" alt="GitHub stars"></a>
+  <a href="https://www.npmjs.com/package/@hhs44/minbook"><img src="https://img.shields.io/npm/dm/@hhs44/minbook?color=cb3837&logo=npm&label=downloads" alt="npm downloads"></a>
+  <a href="https://clawhub.ai/narcooo/minbook"><img src="https://img.shields.io/badge/🦞%20ClawHub-Skill-FF6B35?labelColor=1a1a1a" alt="ClawHub Skill"></a>
 </p>
 
 <p align="center">
@@ -21,11 +21,11 @@
 
 Open-source AI Agent that autonomously writes, audits, and revises novels — with human review gates that keep you in control. Supports LitRPG, Progression Fantasy, Isekai, Romantasy, Sci-Fi, and more. Continuation, spinoff, fanfic, and style imitation workflows built in.
 
-**InkOS Studio 2.0 is here!** — run `inkos` to launch the local web workbench. Book management, chapter review & editing, real-time writing progress, market radar, analytics, AI detection, style analysis, genre management, daemon control, truth file editing — everything the CLI does, now visual.
+**MinBook Studio 2.0 is here!** — run `minbook` to launch the local web workbench. Book management, chapter review & editing, real-time writing progress, market radar, analytics, AI detection, style analysis, genre management, daemon control, truth file editing — everything the CLI does, now visual.
 
-**InkOS TUI is here!** — run `inkos tui` to launch a full-screen interactive dashboard. Conversational creation, natural-language book operations, slash command autocomplete, themed animations — TUI, Studio, and OpenClaw share the same interaction kernel.
+**MinBook TUI is here!** — run `minbook tui` to launch a full-screen interactive dashboard. Conversational creation, natural-language book operations, slash command autocomplete, themed animations — TUI, Studio, and OpenClaw share the same interaction kernel.
 
-**InkOS Short** — Studio chat and CLI can now create a standalone short-fiction package: complete draft, outline and review records, synopsis, selling points, cover prompt, and an optional generated cover image when a cover provider is configured.
+**MinBook Short** — Studio chat and CLI can now create a standalone short-fiction package: complete draft, outline and review records, synopsis, selling points, cover prompt, and an optional generated cover image when a cover provider is configured.
 
 **v1.4.1 Windows provider and long-form speed update** — MiniMax now uses its OpenAI-compatible endpoint by default, long-form writing keeps the faster one-pass repair default while allowing `writing.reviewRetries` to be raised when needed, and the short-fiction / Studio Chat workflow from v1.4 remains available.
 
@@ -36,15 +36,15 @@ Open-source AI Agent that autonomously writes, audits, and revises novels — wi
 ### Install
 
 ```bash
-npm i -g @actalk/inkos
+npm i -g @hhs44/minbook
 ```
 
 ### Use via OpenClaw 🦞
 
-InkOS is published as an [OpenClaw](https://clawhub.ai/narcooo/inkos) Skill, callable by any compatible agent (Claude Code, OpenClaw, etc.):
+MinBook is published as an [OpenClaw](https://clawhub.ai/narcooo/minbook) Skill, callable by any compatible agent (Claude Code, OpenClaw, etc.):
 
 ```bash
-clawhub install inkos          # Install from ClawHub
+clawhub install minbook          # Install from ClawHub
 ```
 
 If you installed via npm or cloned the repo, `skills/SKILL.md` is already included — 🦞 can read it directly without a separate ClawHub install.
@@ -52,7 +52,7 @@ If you installed via npm or cloned the repo, `skills/SKILL.md` is already includ
 Once installed, Claw should prefer the shared interaction entry:
 
 ```bash
-inkos interact --json --message "continue the current book, but keep the pacing tighter"
+minbook interact --json --message "continue the current book, but keep the pacing tighter"
 ```
 
 This routes through the same conversation executor used by the project TUI, so OpenClaw, TUI, and Studio stay on the same control brain. The JSON payload includes:
@@ -63,14 +63,14 @@ This routes through the same conversation executor used by the project TUI, so O
 - pending decision
 - recent events
 
-Atomic commands (`plan chapter` / `compose chapter` / `draft` / `audit` / `revise` / `write next`) are still available, but they are now lower-level tools rather than the preferred OpenClaw entry. You can also browse it on [ClawHub](https://clawhub.ai) by searching `inkos`.
+Atomic commands (`plan chapter` / `compose chapter` / `draft` / `audit` / `revise` / `write next`) are still available, but they are now lower-level tools rather than the preferred OpenClaw entry. You can also browse it on [ClawHub](https://clawhub.ai) by searching `minbook`.
 
 ### Configure
 
 **Option 1: Global config (recommended, one-time setup)**
 
 ```bash
-inkos config set-global \
+minbook config set-global \
   --lang en \
   --provider <openai|anthropic|custom> \
   --base-url <API endpoint> \
@@ -83,29 +83,29 @@ inkos config set-global \
 # model: your model name
 ```
 
-`--lang en` sets English as the default writing language for all projects. Saved to `~/.inkos/.env`. New projects just work without extra config.
+`--lang en` sets English as the default writing language for all projects. Saved to `~/.minbook/.env`. New projects just work without extra config.
 
 **Option 2: Per-project `.env`**
 
 ```bash
-inkos init my-novel     # Initialize project
+minbook init my-novel     # Initialize project
 # Edit my-novel/.env
 ```
 
 ```bash
 # Required
-INKOS_LLM_PROVIDER=                               # openai / anthropic / custom (use custom for any OpenAI-compatible API)
-INKOS_LLM_BASE_URL=                               # API endpoint
-INKOS_LLM_API_KEY=                                 # API Key
-INKOS_LLM_MODEL=                                   # Model name
+MINBOOK_LLM_PROVIDER=                               # openai / anthropic / custom (use custom for any OpenAI-compatible API)
+MINBOOK_LLM_BASE_URL=                               # API endpoint
+MINBOOK_LLM_API_KEY=                                 # API Key
+MINBOOK_LLM_MODEL=                                   # Model name
 
 # Language (defaults to global setting or genre default)
-# INKOS_DEFAULT_LANGUAGE=en                        # en or zh
+# MINBOOK_DEFAULT_LANGUAGE=en                        # en or zh
 
 # Optional
-# INKOS_LLM_TEMPERATURE=0.7                       # Temperature
-# INKOS_LLM_MAX_TOKENS=8192                        # Max output tokens
-# INKOS_LLM_THINKING_BUDGET=0                      # Anthropic extended thinking budget
+# MINBOOK_LLM_TEMPERATURE=0.7                       # Temperature
+# MINBOOK_LLM_MAX_TOKENS=8192                        # Max output tokens
+# MINBOOK_LLM_THINKING_BUDGET=0                      # Anthropic extended thinking budget
 ```
 
 Project `.env` overrides global config. Skip it if no override needed.
@@ -116,9 +116,9 @@ Assign different models to different agents — balance quality and cost:
 
 ```bash
 # Assign different models/providers to different agents
-inkos config set-model writer <model> --provider <provider> --base-url <url> --api-key-env <ENV_VAR>
-inkos config set-model auditor <model> --provider <provider>
-inkos config show-models        # View current routing
+minbook config set-model writer <model> --provider <provider> --base-url <url> --api-key-env <ENV_VAR>
+minbook config set-model auditor <model> --provider <provider>
+minbook config show-models        # View current routing
 ```
 
 Agents without explicit overrides fall back to the global model.
@@ -127,12 +127,12 @@ Agents without explicit overrides fall back to the global model.
 
 **Unified Interaction Kernel + TUI Dashboard + Studio Assistant**
 
-- **Shared Interaction Runtime**: TUI, Studio, `inkos interact`, and OpenClaw Skill share a single NL understanding + execution kernel, supporting 15+ intents (write, revise, rewrite, rename, export, switch book, etc.)
-- **Ink TUI Dashboard**: `inkos` launches a full-screen interactive dashboard (Ink + React) with conversational creation, slash command autocomplete, themed animations, and bilingual i18n
+- **Shared Interaction Runtime**: TUI, Studio, `minbook interact`, and OpenClaw Skill share a single NL understanding + execution kernel, supporting 15+ intents (write, revise, rewrite, rename, export, switch book, etc.)
+- **Ink TUI Dashboard**: `minbook` launches a full-screen interactive dashboard (Ink + React) with conversational creation, slash command autocomplete, themed animations, and bilingual i18n
 - **Studio Assistant Panel**: right-side AI assistant panel connects to the shared interaction kernel — natural language book operations (rename, write, audit, export) with real-time execution status
 - **Conversational Book Creation**: brainstorm book settings through natural language dialogue, one-click create when draft is ready
 - **Book-wide Entity Rename**: `rename Lin Jin to Zhang San` or `/rename Lin Jin => Zhang San` — scans all chapters + truth files in one pass
-- **`inkos interact`**: shared interaction JSON endpoint for OpenClaw / external agent integration
+- **`minbook interact`**: shared interaction JSON endpoint for OpenClaw / external agent integration
 - **Thinking Model Temperature Clamp**: kimi-k2.5 and similar thinking models auto-clamped to temperature=1, compatible with per-call temperature overrides
 - **Studio Dead Code Cleanup**: removed unused shadcn components and dependencies, -2800 lines
 
@@ -141,15 +141,15 @@ Agents without explicit overrides fall back to the global model.
 English is the default for English genre profiles. Pick a genre and go:
 
 ```bash
-inkos book create --title "The Last Delver" --genre litrpg     # LitRPG novel (English by default)
-inkos write next my-book          # Write next chapter (full pipeline: draft → audit → revise)
-inkos status                      # Check status
-inkos review list my-book         # Review drafts
-inkos review approve-all my-book  # Batch approve
-inkos export my-book --format epub  # Export EPUB (read on phone/Kindle)
+minbook book create --title "The Last Delver" --genre litrpg     # LitRPG novel (English by default)
+minbook write next my-book          # Write next chapter (full pipeline: draft → audit → revise)
+minbook status                      # Check status
+minbook review list my-book         # Review drafts
+minbook review approve-all my-book  # Batch approve
+minbook export my-book --format epub  # Export EPUB (read on phone/Kindle)
 ```
 
-Language is set per-genre by default. Override explicitly with `--lang en` or `--lang zh`. Use `inkos genre list` to see all available genres and their default languages.
+Language is set per-genre by default. Override explicitly with `--lang en` or `--lang zh`. Use `minbook genre list` to see all available genres and their default languages.
 
 ### Write Complete Short Fiction
 
@@ -162,7 +162,7 @@ Write a 12-chapter short fiction piece about a modern marriage reversal where th
 Or run it from the CLI:
 
 ```bash
-inkos short run \
+minbook short run \
   --direction "modern short fiction marriage reversal evidence-driven heroine" \
   --chapters 12 \
   --chars 1000
@@ -180,7 +180,7 @@ Generate a short-fiction cover for "The Divorce Papers He Regretted", modern cit
 
 The cover tool writes `covers/<title>/cover-prompt.md` and `covers/<title>/cover.png`. If no cover provider is configured yet, set the cover provider and API key in Studio model settings first.
 
-After generation, you can keep editing the cover prompt through chat, for example: "move the character closer, make the title text bigger, and give her a colder smile." InkOS will pass the revised direction as `coverPrompt`, rewrite `cover-prompt.md`, and regenerate the cover without rewriting the story.
+After generation, you can keep editing the cover prompt through chat, for example: "move the character closer, make the title text bigger, and give her a colder smile." MinBook will pass the revised direction as `coverPrompt`, rewrite `cover-prompt.md`, and regenerate the cover without rewriting the story.
 
 <p align="center">
   <img src="assets/screenshot-terminal.png" width="700" alt="Terminal screenshot">
@@ -190,7 +190,7 @@ After generation, you can keep editing the cover prompt through chat, for exampl
 
 ## English Genre Profiles
 
-InkOS ships with 10 English-native genre profiles. Each includes genre-specific rules, pacing, fatigue word detection, and audit dimensions:
+MinBook ships with 10 English-native genre profiles. Each includes genre-specific rules, pacing, fatigue word detection, and audit dimensions:
 
 | Genre | Key Mechanics |
 |-------|--------------|
@@ -221,11 +221,11 @@ De-AI-ification rules are baked into the Writer agent's prompts: fatigue word li
 
 ### Style Cloning
 
-`inkos style analyze` examines reference text and extracts a statistical fingerprint (sentence length distribution, word frequency patterns, rhythm profiles) plus an LLM-readable style guide. `inkos style import` injects this fingerprint into a book — all future chapters adopt the style, and the Reviser audits against it.
+`minbook style analyze` examines reference text and extracts a statistical fingerprint (sentence length distribution, word frequency patterns, rhythm profiles) plus an LLM-readable style guide. `minbook style import` injects this fingerprint into a book — all future chapters adopt the style, and the Reviser audits against it.
 
 ### Creative Brief
 
-`inkos book create --brief my-ideas.md` — pass your brainstorming notes, worldbuilding doc, or character sheets. The Architect agent builds from your brief (generating `story_bible.md` and `book_rules.md`) instead of inventing from scratch, and persists the brief into `story/author_intent.md` so the book's long-horizon intent does not disappear after initialization.
+`minbook book create --brief my-ideas.md` — pass your brainstorming notes, worldbuilding doc, or character sheets. The Architect agent builds from your brief (generating `story_bible.md` and `book_rules.md`) instead of inventing from scratch, and persists the brief into `story/author_intent.md` so the book's long-horizon intent does not disappear after initialization.
 
 ### Input Governance Control Surface
 
@@ -237,8 +237,8 @@ Every book now has two long-lived Markdown control docs:
 Before writing, you can run:
 
 ```bash
-inkos plan chapter my-book --context "Pull attention back to the mentor conflict first"
-inkos compose chapter my-book
+minbook plan chapter my-book --context "Pull attention back to the mentor conflict first"
+minbook compose chapter my-book
 ```
 
 This generates `story/runtime/chapter-XXXX.intent.md`, `context.json`, `rule-stack.yaml`, and `trace.json`. `intent.md` is the human-readable contract; the others are execution/debug artifacts. `plan` calls the LLM to produce the chapter intent; `compose` only compiles local documents and state, so it can run before you finish API key setup.
@@ -249,36 +249,36 @@ This generates `story/runtime/chapter-XXXX.intent.md`, `context.json`, `rule-sta
 
 - `--words` sets a target band, not an exact hard promise
 - Chinese chapters default to `zh_chars`; English chapters default to `en_words`
-- If the chapter drifts outside the soft band, InkOS may run one corrective normalization pass (compress or expand) instead of hard-cutting prose
-- If the chapter still misses the hard range after that one pass, InkOS still saves it, but surfaces a visible length warning and telemetry in the result and chapter index
+- If the chapter drifts outside the soft band, MinBook may run one corrective normalization pass (compress or expand) instead of hard-cutting prose
+- If the chapter still misses the hard range after that one pass, MinBook still saves it, but surfaces a visible length warning and telemetry in the result and chapter index
 
 ### Continuation Writing
 
-`inkos import chapters` imports existing novel text, auto reverse-engineers all 7 truth files (world state, character matrix, resource ledger, plot hooks, etc.), supports `Chapter N` and custom split patterns, and resumable import. After import, `inkos write next` seamlessly continues the story.
+`minbook import chapters` imports existing novel text, auto reverse-engineers all 7 truth files (world state, character matrix, resource ledger, plot hooks, etc.), supports `Chapter N` and custom split patterns, and resumable import. After import, `minbook write next` seamlessly continues the story.
 
 ### Fan Fiction
 
-`inkos fanfic init --from source.txt --mode canon` creates a fanfic book from source material. Four modes: canon (faithful continuation), au (alternate universe), ooc (out of character), cp (ship-focused). Includes a canon importer, fanfic-specific audit dimensions, and information boundary controls to keep lore consistent.
+`minbook fanfic init --from source.txt --mode canon` creates a fanfic book from source material. Four modes: canon (faithful continuation), au (alternate universe), ooc (out of character), cp (ship-focused). Includes a canon importer, fanfic-specific audit dimensions, and information boundary controls to keep lore consistent.
 
 ### Multi-Model Routing
 
-Different agents can use different models and providers. Writer on Claude (stronger creative), Auditor on GPT-4o (cheaper and fast), Radar on a local model (zero cost). `inkos config set-model` configures per-agent; unconfigured agents fall back to the global model.
+Different agents can use different models and providers. Writer on Claude (stronger creative), Auditor on GPT-4o (cheaper and fast), Radar on a local model (zero cost). `minbook config set-model` configures per-agent; unconfigured agents fall back to the global model.
 
 ### Daemon Mode + Notifications
 
-`inkos up` starts an autonomous background loop that writes chapters on a schedule. The pipeline runs fully unattended for non-critical issues, pausing for human review when needed. Notifications via Telegram and Webhook (HMAC-SHA256 signing + event filtering). Logs to `inkos.log` (JSON Lines), `-q` for quiet mode.
+`minbook up` starts an autonomous background loop that writes chapters on a schedule. The pipeline runs fully unattended for non-critical issues, pausing for human review when needed. Notifications via Telegram and Webhook (HMAC-SHA256 signing + event filtering). Logs to `minbook.log` (JSON Lines), `-q` for quiet mode.
 
 ### Local Model Compatibility
 
-Supports any OpenAI-compatible endpoint (`--provider custom`). Stream auto-fallback — when SSE isn't supported, InkOS retries with sync mode automatically. Fallback parser handles non-standard output from smaller models, and partial content recovery kicks in on stream interruption.
+Supports any OpenAI-compatible endpoint (`--provider custom`). Stream auto-fallback — when SSE isn't supported, MinBook retries with sync mode automatically. Fallback parser handles non-standard output from smaller models, and partial content recovery kicks in on stream interruption.
 
 ### Reliability
 
-Every chapter creates an automatic state snapshot — `inkos write rewrite` rolls back any chapter to its pre-write state. The Writer outputs a pre-write checklist (context scope, resources, pending hooks, risks) and a post-write settlement table; the Auditor cross-validates both. File locking prevents concurrent writes. Post-write validator includes cross-chapter repetition detection and 11 hard rules with auto spot-fix.
+Every chapter creates an automatic state snapshot — `minbook write rewrite` rolls back any chapter to its pre-write state. The Writer outputs a pre-write checklist (context scope, resources, pending hooks, risks) and a post-write settlement table; the Auditor cross-validates both. File locking prevents concurrent writes. Post-write validator includes cross-chapter repetition detection and 11 hard rules with auto spot-fix.
 
 The hook system uses Zod schema validation — `lastAdvancedChapter` must be an integer, `status` can only be open/progressing/deferred/resolved. JSON deltas from the LLM are processed through `applyRuntimeStateDelta` (immutable update) and `validateRuntimeState` (structural check) before persistence. Corrupted data is rejected, not propagated.
 
-User-configured `INKOS_LLM_MAX_TOKENS` now acts as a global cap on all API calls. Reserved keys in `llm.extra` (max_tokens, temperature, etc.) are automatically stripped to prevent accidental overrides.
+User-configured `MINBOOK_LLM_MAX_TOKENS` now acts as a global cap on all API calls. Reserved keys in `llm.extra` (max_tokens, temperature, etc.) are automatically stripped to prevent accidental overrides.
 
 ---
 
@@ -331,7 +331,7 @@ On Node 22+, a SQLite temporal memory database (`story/memory.db`) is automatica
 
 ### Control Surface and Runtime Artifacts
 
-Alongside the 7 truth files, InkOS splits guardrails from customization into reviewable control docs:
+Alongside the 7 truth files, MinBook splits guardrails from customization into reviewable control docs:
 
 - `story/author_intent.md`: long-horizon author intent
 - `story/current_focus.md`: near-term steering
@@ -340,7 +340,7 @@ Alongside the 7 truth files, InkOS splits guardrails from customization into rev
 - `story/runtime/chapter-XXXX.rule-stack.yaml`: priority layers and override relationships
 - `story/runtime/chapter-XXXX.trace.json`: compilation trace for this chapter
 
-That means briefs, outline nodes, book rules, and current requests are no longer mashed into one prompt blob; InkOS compiles them first, then writes.
+That means briefs, outline nodes, book rules, and current requests are no longer mashed into one prompt blob; MinBook compiles them first, then writes.
 
 ### Writing Rule System
 
@@ -350,16 +350,16 @@ On top of that, each genre has dedicated rules (prohibitions, language constrain
 
 ## Usage Modes
 
-InkOS provides three interaction modes, all sharing the same atomic operations:
+MinBook provides three interaction modes, all sharing the same atomic operations:
 
 ### 1. Full Pipeline (One Command)
 
 ```bash
-inkos write next my-book              # Draft → audit → auto-revise, all in one
-inkos write next my-book --count 5    # Write 5 chapters in sequence
+minbook write next my-book              # Draft → audit → auto-revise, all in one
+minbook write next my-book --count 5    # Write 5 chapters in sequence
 ```
 
-`write next` now uses the `plan -> compose -> write` governance chain by default. If you need the older prompt-assembly path, set this explicitly in `inkos.json`:
+`write next` now uses the `plan -> compose -> write` governance chain by default. If you need the older prompt-assembly path, set this explicitly in `minbook.json`:
 
 ```json
 {
@@ -372,11 +372,11 @@ The default is now `v2`. `legacy` remains available as an explicit fallback.
 ### 2. Atomic Commands (Composable, External Agent Friendly)
 
 ```bash
-inkos plan chapter my-book --context "Focus on the mentor conflict first" --json
-inkos compose chapter my-book --json
-inkos draft my-book --context "Focus on the dungeon boss encounter and party dynamics" --json
-inkos audit my-book 31 --json
-inkos revise my-book 31 --json
+minbook plan chapter my-book --context "Focus on the mentor conflict first" --json
+minbook compose chapter my-book --json
+minbook draft my-book --context "Focus on the dungeon boss encounter and party dynamics" --json
+minbook audit my-book 31 --json
+minbook revise my-book 31 --json
 ```
 
 Each command performs a single operation independently. `--json` outputs structured data. `plan` / `compose` govern inputs; `draft` / `audit` / `revise` handle prose and quality checks. They can be called by external AI agents via `exec`, or used in scripts.
@@ -384,9 +384,9 @@ Each command performs a single operation independently. `--json` outputs structu
 ### 3. Natural Language Agent Mode
 
 ```bash
-inkos agent "Write a LitRPG novel where the MC is a healer class in a dungeon world"
-inkos agent "Write the next chapter, focus on the boss fight and loot distribution"
-inkos agent "Create a progression fantasy about a mage who can only use one spell"
+minbook agent "Write a LitRPG novel where the MC is a healer class in a dungeon world"
+minbook agent "Write the next chapter, focus on the boss fight and loot distribution"
+minbook agent "Create a progression fantasy about a mage who can only use one spell"
 ```
 
 18 built-in tools (write_draft, plan_chapter, compose_chapter, audit_chapter, revise_chapter, scan_market, create_book, update_author_intent, update_current_focus, get_book_status, read_truth_files, list_books, write_full_pipeline, web_fetch, import_style, import_canon, import_chapters, write_truth_file), with the LLM deciding call order via tool-use. The recommended agent flow is: adjust the control surface first, then `plan` / `compose`, then choose draft-only or full-pipeline writing.
@@ -395,42 +395,42 @@ inkos agent "Create a progression fantasy about a mage who can only use one spel
 
 | Command | Description |
 |---------|-------------|
-| `inkos init [name]` | Initialize project (omit name to init current directory) |
-| `inkos book create` | Create a new book (`--genre`, `--chapter-words`, `--target-chapters`, `--brief <file>`, `--lang en/zh`) |
-| `inkos book update [id]` | Update book settings (`--chapter-words`, `--target-chapters`, `--status`, `--lang`) |
-| `inkos book list` | List all books |
-| `inkos book delete <id>` | Delete a book and all its data (`--force` to skip confirmation) |
-| `inkos genre list/show/copy/create` | View, copy, or create genres |
-| `inkos plan chapter [id]` | Generate the next chapter's `intent.md` (`--context` / `--context-file` for current steering) |
-| `inkos compose chapter [id]` | Generate the next chapter's `context.json`, `rule-stack.yaml`, and `trace.json` |
-| `inkos write next [id]` | Full pipeline: write next chapter (`--words` to override, `--count` for batch, `-q` quiet mode) |
-| `inkos write rewrite [id] <n>` | Rewrite chapter N (restores state snapshot, `--force` to skip confirmation) |
-| `inkos draft [id]` | Write draft only (`--words` to override word count, `-q` quiet mode) |
-| `inkos audit [id] [n]` | Audit a specific chapter |
-| `inkos revise [id] [n]` | Revise a specific chapter |
-| `inkos agent <instruction>` | Natural language agent mode |
-| `inkos review list [id]` | Review drafts |
-| `inkos review approve-all [id]` | Batch approve |
-| `inkos status [id]` | Project status |
-| `inkos export [id]` | Export book (`--format txt/md/epub`, `--output <path>`, `--approved-only`) |
-| `inkos fanfic init` | Create a fanfic book from source material (`--from`, `--mode canon/au/ooc/cp`) |
-| `inkos config set-global` | Set global LLM config (~/.inkos/.env) |
-| `inkos config set-model <agent> <model>` | Per-agent model override (`--base-url`, `--provider`, `--api-key-env`) |
-| `inkos config show-models` | Show current model routing |
-| `inkos doctor` | Diagnose setup issues (API connectivity test + provider compatibility hints) |
-| `inkos detect [id] [n]` | AIGC detection (`--all` for all chapters, `--stats` for statistics) |
-| `inkos style analyze <file>` | Analyze reference text to extract style fingerprint |
-| `inkos style import <file> [id]` | Import style fingerprint into a book |
-| `inkos import chapters [id] --from <path>` | Import existing chapters for continuation (`--split`, `--resume-from`) |
-| `inkos analytics [id]` / `inkos stats [id]` | Book analytics (audit pass rate, top issues, chapter ranking, token usage) |
-| `inkos studio` | Start web workbench (`-p` for port, default 4567) |
-| `inkos up / down` | Start/stop daemon (`-q` quiet mode, auto-writes `inkos.log`) |
+| `minbook init [name]` | Initialize project (omit name to init current directory) |
+| `minbook book create` | Create a new book (`--genre`, `--chapter-words`, `--target-chapters`, `--brief <file>`, `--lang en/zh`) |
+| `minbook book update [id]` | Update book settings (`--chapter-words`, `--target-chapters`, `--status`, `--lang`) |
+| `minbook book list` | List all books |
+| `minbook book delete <id>` | Delete a book and all its data (`--force` to skip confirmation) |
+| `minbook genre list/show/copy/create` | View, copy, or create genres |
+| `minbook plan chapter [id]` | Generate the next chapter's `intent.md` (`--context` / `--context-file` for current steering) |
+| `minbook compose chapter [id]` | Generate the next chapter's `context.json`, `rule-stack.yaml`, and `trace.json` |
+| `minbook write next [id]` | Full pipeline: write next chapter (`--words` to override, `--count` for batch, `-q` quiet mode) |
+| `minbook write rewrite [id] <n>` | Rewrite chapter N (restores state snapshot, `--force` to skip confirmation) |
+| `minbook draft [id]` | Write draft only (`--words` to override word count, `-q` quiet mode) |
+| `minbook audit [id] [n]` | Audit a specific chapter |
+| `minbook revise [id] [n]` | Revise a specific chapter |
+| `minbook agent <instruction>` | Natural language agent mode |
+| `minbook review list [id]` | Review drafts |
+| `minbook review approve-all [id]` | Batch approve |
+| `minbook status [id]` | Project status |
+| `minbook export [id]` | Export book (`--format txt/md/epub`, `--output <path>`, `--approved-only`) |
+| `minbook fanfic init` | Create a fanfic book from source material (`--from`, `--mode canon/au/ooc/cp`) |
+| `minbook config set-global` | Set global LLM config (~/.minbook/.env) |
+| `minbook config set-model <agent> <model>` | Per-agent model override (`--base-url`, `--provider`, `--api-key-env`) |
+| `minbook config show-models` | Show current model routing |
+| `minbook doctor` | Diagnose setup issues (API connectivity test + provider compatibility hints) |
+| `minbook detect [id] [n]` | AIGC detection (`--all` for all chapters, `--stats` for statistics) |
+| `minbook style analyze <file>` | Analyze reference text to extract style fingerprint |
+| `minbook style import <file> [id]` | Import style fingerprint into a book |
+| `minbook import chapters [id] --from <path>` | Import existing chapters for continuation (`--split`, `--resume-from`) |
+| `minbook analytics [id]` / `minbook stats [id]` | Book analytics (audit pass rate, top issues, chapter ranking, token usage) |
+| `minbook studio` | Start web workbench (`-p` for port, default 4567) |
+| `minbook up / down` | Start/stop daemon (`-q` quiet mode, auto-writes `minbook.log`) |
 
 `[id]` is auto-detected when the project has only one book. All commands support `--json` for structured output. `draft` / `write next` / `plan chapter` / `compose chapter` accept `--context` for steering, and `--words` overrides the target chapter size. `book create` supports `--brief <file>` to pass a creative brief — the Architect builds from your ideas instead of generating from scratch. `plan chapter` calls the LLM to create chapter intent; `compose chapter` does not require a live LLM, so you can inspect governed inputs before finishing API setup.
 
 ## Roadmap
 
-- [x] ~~`packages/studio` Web UI workbench (Vite + React + Hono)~~ — shipped, run `inkos studio`
+- [x] ~~`packages/studio` Web UI workbench (Vite + React + Hono)~~ — shipped, run `minbook studio`
 - [ ] Interactive fiction (branching narrative + reader choices)
 - [ ] Partial chapter intervention (rewrite half a chapter + cascade truth file updates)
 - [ ] Custom agent plugin system
@@ -450,11 +450,11 @@ pnpm typecheck    # Type-check without emitting
 
 ## Star History
 
-<a href="https://www.star-history.com/#Narcooo/inkos&type=date&legend=top-left">
+<a href="https://www.star-history.com/#Narcooo/minbook&type=date&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Narcooo/inkos&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Narcooo/inkos&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Narcooo/inkos&type=date&legend=top-left" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Narcooo/minbook&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Narcooo/minbook&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Narcooo/minbook&type=date&legend=top-left" />
  </picture>
 </a>
 
@@ -462,8 +462,8 @@ pnpm typecheck    # Type-check without emitting
 
 <div align="center">
 
-<a href="https://skill-history.com/narcooo/inkos">
-  <img alt="Skills Download History" src="https://skill-history.com/chart/narcooo/inkos.svg" />
+<a href="https://skill-history.com/narcooo/minbook">
+  <img alt="Skills Download History" src="https://skill-history.com/chart/narcooo/minbook.svg" />
 </a>
 
 </div>
@@ -474,8 +474,8 @@ pnpm typecheck    # Type-check without emitting
 
 ## Contributors
 
-<a href="https://github.com/Narcooo/inkos/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Narcooo/inkos" />
+<a href="https://github.com/Narcooo/minbook/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Narcooo/minbook" />
 </a>
 
 ## License

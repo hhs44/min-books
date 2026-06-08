@@ -8,7 +8,7 @@ describe("project bootstrap", () => {
   let tempDir: string;
 
   beforeEach(async () => {
-    tempDir = await mkdtemp(join(tmpdir(), "inkos-bootstrap-"));
+    tempDir = await mkdtemp(join(tmpdir(), "minbook-bootstrap-"));
     process.env.HOME = tempDir;
   });
 
@@ -23,8 +23,8 @@ describe("project bootstrap", () => {
     const initialized = await ensureProjectDirectoryInitialized(tempDir, { language: "zh" });
 
     expect(initialized).toBe(true);
-    const config = JSON.parse(await readFile(join(tempDir, "inkos.json"), "utf-8"));
-    expect(config.name).toMatch(/^inkos-bootstrap-/);
+    const config = JSON.parse(await readFile(join(tempDir, "minbook.json"), "utf-8"));
+    expect(config.name).toMatch(/^minbook-bootstrap-/);
     expect(config.version).toBe("0.1.0");
     expect(config.llm.configSource).toBe("studio");
     expect(config.llm.service).toBe("custom");
@@ -62,8 +62,8 @@ describe("project bootstrap", () => {
     expect(gitignore).toContain(".DS_Store\n");
   });
 
-  it("returns false when the directory is already an InkOS project", async () => {
-    await writeFile(join(tempDir, "inkos.json"), "{}\n", "utf-8");
+  it("returns false when the directory is already an MinBook project", async () => {
+    await writeFile(join(tempDir, "minbook.json"), "{}\n", "utf-8");
     const { ensureProjectDirectoryInitialized } = await import("../project-bootstrap.js");
 
     await expect(ensureProjectDirectoryInitialized(tempDir, { language: "zh" })).resolves.toBe(false);

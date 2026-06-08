@@ -141,7 +141,7 @@ function attachRequestLanguage(
 
 async function detectProjectInteractionLanguage(projectRoot: string): Promise<"zh" | "en" | undefined> {
   try {
-    const raw = await readFile(join(projectRoot, "inkos.json"), "utf-8");
+    const raw = await readFile(join(projectRoot, "minbook.json"), "utf-8");
     const parsed = JSON.parse(raw) as { language?: string };
     return parsed.language === "en" ? "en" : parsed.language === "zh" ? "zh" : undefined;
   } catch {

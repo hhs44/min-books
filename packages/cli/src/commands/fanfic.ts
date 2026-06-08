@@ -1,7 +1,7 @@
 import { Command } from "commander";
 import { readFile, readdir, stat } from "node:fs/promises";
 import { join, resolve, basename } from "node:path";
-import { deriveBookIdFromTitle, normalizePlatformOrOther, PipelineRunner, type BookConfig, type FanficMode } from "@actalk/inkos-core";
+import { deriveBookIdFromTitle, normalizePlatformOrOther, PipelineRunner, type BookConfig, type FanficMode } from "@hhs44/minbook-core";
 import { loadConfig, buildPipelineConfig, findProjectRoot, resolveBookId, log, logError } from "../utils.js";
 
 export const fanficCommand = new Command("fanfic")
@@ -69,7 +69,7 @@ fanficCommand
           fanficMode: mode,
           source: sourceName,
           location: `books/${bookId}/`,
-          nextStep: `inkos write next ${bookId}`,
+          nextStep: `minbook write next ${bookId}`,
         }, null, 2));
       } else {
         log(`Fanfic created: ${bookId}`);
@@ -77,7 +77,7 @@ fanficCommand
         log(`  Location: books/${bookId}/`);
         log(`  fanfic_canon.md + foundation generated.`);
         log("");
-        log(`Next: inkos write next ${bookId}`);
+        log(`Next: minbook write next ${bookId}`);
       }
     } catch (e) {
       if (opts.json) {
@@ -99,7 +99,7 @@ fanficCommand
       await loadConfig();
       const root = findProjectRoot();
       const bookId = await resolveBookId(bookIdArg, root);
-      const { StateManager } = await import("@actalk/inkos-core");
+      const { StateManager } = await import("@hhs44/minbook-core");
       const state = new StateManager(root);
       const bookDir = state.bookDir(bookId);
 
@@ -107,7 +107,7 @@ fanficCommand
       try {
         canon = await readFile(join(bookDir, "story/fanfic_canon.md"), "utf-8");
       } catch {
-        throw new Error(`该书没有同人正典文件。用 inkos fanfic init 创建同人书。`);
+        throw new Error(`该书没有同人正典文件。用 minbook fanfic init 创建同人书。`);
       }
 
       if (opts.json) {
@@ -137,7 +137,7 @@ fanficCommand
       const config = await loadConfig();
       const root = findProjectRoot();
       const bookId = await resolveBookId(bookIdArg, root);
-      const { StateManager } = await import("@actalk/inkos-core");
+      const { StateManager } = await import("@hhs44/minbook-core");
       const state = new StateManager(root);
       const book = await state.loadBookConfig(bookId);
 

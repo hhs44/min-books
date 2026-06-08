@@ -83,8 +83,8 @@ const ZH_CN: TuiCopy = {
     manual: "手动",
   },
   composer: {
-    placeholder: "告诉 InkOS 要写什么、修改什么，或解释什么…",
-    emptyConversation: "先告诉 InkOS 你要做什么。",
+    placeholder: "告诉 MinBook 要写什么、修改什么，或解释什么…",
+    emptyConversation: "先告诉 MinBook 你要做什么。",
     helper: "回车发送 • /new 输入你的想法 • /write • /rewrite • /truth • /export • /depth • /help",
     submitting: "处理中…",
     failed: "上次请求失败",
@@ -93,7 +93,7 @@ const ZH_CN: TuiCopy = {
   notes: {
     help: "可用命令：/new（输入想法）、/write、/books、/rewrite、/focus、/truth、/rename、/replace、/export、/status、/clear、/depth、/quit。其他写作和项目操作直接用自然语言交给 agent。",
     status: (stage, mode) => `当前状态：${stage}（${mode}）。`,
-    config: "当前 Ink 仪表盘里还不支持交互式 /config。请使用 inkos config set-global。",
+    config: "当前 Ink 仪表盘里还不支持交互式 /config。请使用 minbook config set-global。",
     depthSet: (depthLabel) => `思考深度已切换为 ${depthLabel}。`,
     newBookGuide: "开始构思新书。直接描述你的想法——题材、世界观、主角、核心冲突都可以。AI 会逐步引导，信息足够时会直接调用建书能力。",
     noLlmConfig: "未发现 LLM 配置。",
@@ -101,7 +101,7 @@ const ZH_CN: TuiCopy = {
   },
   roles: {
     user: "你",
-    assistant: "InkOS",
+    assistant: "MinBook",
     system: "系统",
   },
   activity: {
@@ -152,8 +152,8 @@ const EN: TuiCopy = {
     manual: "manual",
   },
   composer: {
-    placeholder: "Ask InkOS to write, revise, or explain…",
-    emptyConversation: "Start by asking InkOS what to do.",
+    placeholder: "Ask MinBook to write, revise, or explain…",
+    emptyConversation: "Start by asking MinBook what to do.",
     helper: "Enter to send • /new describe your idea • /write • /rewrite • /truth • /export • /depth • /help",
     submitting: "Submitting…",
     failed: "Last request failed",
@@ -162,7 +162,7 @@ const EN: TuiCopy = {
   notes: {
     help: "Commands: /new (describe your idea), /write, /books, /rewrite, /focus, /truth, /rename, /replace, /export, /status, /clear, /depth, /quit. Other writing and project operations go through the agent as natural language.",
     status: (stage, mode) => `Status: ${stage} (${mode}).`,
-    config: "Interactive /config is not available inside the Ink dashboard yet. Use inkos config set-global.",
+    config: "Interactive /config is not available inside the Ink dashboard yet. Use minbook config set-global.",
     depthSet: (depthLabel) => `Thinking depth set to ${depthLabel}.`,
     newBookGuide: "Starting a new book. Describe your idea — genre, world, protagonist, core conflict, anything. The AI will guide you and call the book-creation capability when enough information is available.",
     noLlmConfig: "No LLM configuration found.",
@@ -170,7 +170,7 @@ const EN: TuiCopy = {
   },
   roles: {
     user: "You",
-    assistant: "InkOS",
+    assistant: "MinBook",
     system: "System",
   },
   activity: {
@@ -199,7 +199,7 @@ export function resolveTuiLocale(
   env: NodeJS.ProcessEnv = process.env,
   preferredLanguage?: string,
 ): TuiLocale {
-  const requested = normalizeLocale(env.INKOS_TUI_LOCALE ?? env.INKOS_LOCALE);
+  const requested = normalizeLocale(env.MINBOOK_TUI_LOCALE ?? env.MINBOOK_LOCALE);
   if (requested) {
     return requested;
   }

@@ -15,8 +15,8 @@
     "types": ["node", "vitest/globals"],
     "paths": {
       "@/*": ["./src/*"],
-      "@actalk/inkos-core": ["../core/src/index.ts"],
-      "@actalk/inkos-core/*": ["../core/src/*"]
+      "@hhs44/minbook-core": ["../core/src/index.ts"],
+      "@hhs44/minbook-core/*": ["../core/src/*"]
     },
     "baseUrl": "."
   },
