@@ -45,7 +45,6 @@ htmlcov/
 .coverage
 .coverage.*
 *.egg-info/
-dist/
 build/
 
 # uv

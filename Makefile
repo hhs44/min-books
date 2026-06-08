@@ -3,7 +3,7 @@
 # 默认目标
 help:
 	@echo "MinBook 开发命令:"
-	@echo "  make install     - 安装所有 Python 依赖(uv sync)"
+	@echo "  make install     - 安装所有 Python 依赖(uv sync --all-packages)"
 	@echo "  make dev         - 启动所有服务(docker-compose up)"
 	@echo "  make down        - 停止所有服务"
 	@echo "  make logs        - 查看所有服务日志"

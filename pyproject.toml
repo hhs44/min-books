@@ -35,7 +35,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["minbook_"]
+known-first-party = ["minbook_common", "minbook_db", "minbook_otel", "app"]
 
 [tool.mypy]
 python_version = "3.11"
