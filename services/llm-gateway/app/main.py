@@ -18,6 +18,7 @@ async def lifespan(app):
 
 app = FastAPI(title=f"MinBook {SERVICE_NAME}", lifespan=lifespan)
 setup_logging(level=os.environ.get("LOG_LEVEL", "INFO"))
+os.environ.setdefault("OTEL_EXPORTER_OTLP_ENDPOINT", "http://otel-collector:4317")
 init_tracing(SERVICE_NAME, os.environ.get("SERVICE_VERSION", "0.1.0"))
 instrument_fastapi(app)
 app.add_middleware(InternalAuthMiddleware)
