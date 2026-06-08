@@ -1,1 +1,1 @@
-"""MinBook otel package: OpenTelemetry initialization helpers, LLM span utilities."""
+"""MinBook 共享 OpenTelemetry 初始化 + LLM span 工具。"""
