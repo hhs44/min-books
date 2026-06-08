@@ -1,14 +1,17 @@
 [project]
 name = "minbook-common"
 version = "0.1.0"
-description = "MinBook 共享 Pydantic 模型和工具"
+description = "MinBook 共享 Pydantic 模型、配置、JWT/HMAC 鉴权、NATS 客户端、FastAPI 中间件"
 requires-python = ">=3.11,<3.13"
 dependencies = [
     "pydantic>=2.5",
     "pydantic-settings>=2.1",
     "httpx>=0.27",
-    "python-jose[cryptography]>=3.3",
+    "pyjwt>=2.8",
     "nats-py>=2.6",
+    "fastapi>=0.110",
+    "starlette>=0.36",
+    # minbook-db 也依赖本包(共享 Settings),所以不强加反向依赖。
 ]
 
 [build-system]
