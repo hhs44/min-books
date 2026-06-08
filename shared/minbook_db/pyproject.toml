@@ -1,0 +1,20 @@
+[project]
+name = "minbook-db"
+version = "0.1.0"
+description = "MinBook 共享 SQLAlchemy 基类、DB session、跨服务签名"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "sqlalchemy[asyncio]>=2.0",
+    "asyncpg>=0.29",
+    "alembic>=1.13",
+    "redis>=5.0",
+    "pydantic>=2.5",
+    "pydantic-settings>=2.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["minbook_db"]
