@@ -16,23 +16,20 @@ processors:
     limit_percentage: 80
     spike_limit_percentage: 20
   # §10 §6 强制 100% 保留 LLM span
+  # 注:composite.max_or 是 v0.97+ 语法;v0.96.0 用多 policies 同样 OR 语义
   tail_sampling:
     decision_wait: 10s
     num_traces: 100000
     policies:
-      - name: keep-llm-and-errors
-        type: composite
-        composite:
-          max_or:
-            - name: keep-llm
-              type: string_attribute
-              string_attribute:
-                key: llm.model
-                values: [".+"]
-            - name: keep-errors
-              type: status_code
-              status_code:
-                status_codes: [ERROR]
+      - name: keep-llm
+        type: string_attribute
+        string_attribute:
+          key: llm.model
+          values: [".+"]
+      - name: keep-errors
+        type: status_code
+        status_code:
+          status_codes: [ERROR]
       - name: probabilistic
         type: probabilistic
         probabilistic:
