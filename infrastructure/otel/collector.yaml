@@ -1,0 +1,52 @@
+# infrastructure/otel/collector.yaml
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    timeout: 5s
+    send_batch_size: 1024
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 80
+    spike_limit_percentage: 20
+  # §10 §6 强制 100% 保留 LLM span
+  tail_sampling:
+    decision_wait: 10s
+    num_traces: 100000
+    policies:
+      - name: keep-llm-and-errors
+        type: composite
+        composite:
+          max_or:
+            - name: keep-llm
+              type: string_attribute
+              string_attribute:
+                key: llm.model
+                values: [".+"]
+            - name: keep-errors
+              type: status_code
+              status_code:
+                status_codes: [ERROR]
+      - name: probabilistic
+        type: probabilistic
+        probabilistic:
+          sampling_percentage: 100  # §10 决策:单机默认 100%
+
+exporters:
+  otlp/tempo:
+    endpoint: tempo:4317
+    tls:
+      insecure: true
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, tail_sampling, batch]
+      exporters: [otlp/tempo]
