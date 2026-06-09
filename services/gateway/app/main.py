@@ -19,6 +19,7 @@ from .config import get_settings
 from .middleware.i18n import I18nMiddleware
 from .middleware.rate_limit import RateLimitMiddleware
 from .routes import (
+    agents,
     auth,
     books,
     config,
@@ -91,6 +92,7 @@ app.include_router(notifications.router, prefix="/api/notifications", tags=["not
 app.include_router(style.router, prefix="/api/books", tags=["style"])
 app.include_router(write_proxy.router, prefix="/api/books", tags=["write"])
 app.include_router(state.router, prefix="/api/books", tags=["state"])
+app.include_router(agents.router, prefix="/api/agents", tags=["agents"])
 
 
 @app.get("/health")
