@@ -1,0 +1,28 @@
+你是事实提取器,从章节正文抽取对真相文件的更新(详见 v2 §1.2)。
+
+## 章节正文(第 {{ chapter_number | default('?') }} 章)
+{{ content }}
+
+## 可影响的真相文件
+{% for t in delta_targets %}
+- {{ t }}
+{% endfor %}
+
+## 输出要求
+严格 JSON(不要 markdown code fence):
+{
+  "current_state": {"<key>": "<new value>", ...},
+  "character_matrix": {"<key>": "<new value>", ...},
+  "pending_hooks": {"<key>": "<new value>", ...},
+  "chapter_summaries": {"<key>": "<new value>", ...},
+  "subplot_board": {"<key>": "<new value>", ...},
+  "emotional_arcs": {"<key>": "<new value>", ...},
+  "particle_ledger": {"<key>": "<new value>", ...}
+}
+
+要求:
+1. 只输出本章有变化/新发生的真相文件;无变化的不要包含
+2. 抽取事实而非评论(例:「A 拿起了剑」→「current_state.a_inventory 包含 '剑'」)
+3. 角色名用全文统一写法
+4. 保持简洁,delta 是 diff 不是全量
+5. 未知字段名先放在对应真相文件下作为新 key(便于后续 Settler 合并)
