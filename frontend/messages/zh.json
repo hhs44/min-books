@@ -1,0 +1,140 @@
+{
+  "app": {
+    "name": "MinBook",
+    "description": "多智能体小说写作系统"
+  },
+  "nav": {
+    "books": "书籍列表",
+    "write": "写作工作台",
+    "state": "真相文件",
+    "cost": "成本 & 监控",
+    "observability": "链路追踪",
+    "agents": "Agents",
+    "notifications": "通知配置",
+    "settings": "设置"
+  },
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "edit": "编辑",
+    "delete": "删除",
+    "loading": "加载中...",
+    "error": "错误",
+    "create": "新建",
+    "search": "搜索",
+    "refresh": "刷新",
+    "back": "返回",
+    "confirm": "确认"
+  },
+  "auth": {
+    "login": "登录",
+    "logout": "登出",
+    "logging_in": "登录中...",
+    "tokenPlaceholder": "粘贴 JWT token...",
+    "tokenHint": "找不到 token?",
+    "tokenHintDetails": "Token 启动时由 Gateway 自动生成。重启 Gateway 服务会重新生成。",
+    "viewToken": "查看方式: cat ~/.minbook/auth.token"
+  },
+  "home": {
+    "title": "我的书籍",
+    "newBook": "新建书籍",
+    "empty": "还没有书籍。先用 CLI 创建,然后刷新本页面。",
+    "loadError": "加载失败"
+  },
+  "book": {
+    "writeNext": "写下一章",
+    "chapters": "章节",
+    "noChapters": "暂无章节",
+    "viewState": "查看/编辑真相文件",
+    "viewStyle": "文风分析"
+  },
+  "write": {
+    "title": "写作工作台",
+    "triggerNew": "触发新章节",
+    "chapterNumber": "章节号",
+    "bookId": "书籍 ID",
+    "currentFocus": "作者意图 / 当前焦点",
+    "focusPlaceholder": "描述本章你想表达的内容...",
+    "start": "开始写",
+    "writing": "写作中...",
+    "liveProgress": "实时进度",
+    "current": "当前",
+    "streamOutput": "正文流(实时)"
+  },
+  "state": {
+    "title": "真相文件",
+    "currentState": "当前状态",
+    "characterMatrix": "角色矩阵",
+    "pendingHooks": "未结伏笔",
+    "chapterSummaries": "章节摘要",
+    "subplotBoard": "支线板",
+    "emotionalArcs": "情感曲线",
+    "particleLedger": "粒子账本",
+    "missingBookId": "请从书籍详情页进入,或在 URL 添加 ?bookId=..."
+  },
+  "cost": {
+    "title": "LLM 成本",
+    "today": "今日",
+    "thisWeek": "本周",
+    "thisMonth": "本月",
+    "thisYear": "本年",
+    "dailyChart": "每日成本(过去 30 天)",
+    "topBooks": "单书成本 Top 10",
+    "recentCalls": "最近 LLM 调用",
+    "noData": "暂无数据",
+    "noCalls": "暂无调用"
+  },
+  "observability": {
+    "title": "链路追踪",
+    "viewTrace": "查看指定 Trace",
+    "tracePlaceholder": "输入 trace_id(如 abc123...)",
+    "query": "查询",
+    "clear": "清空",
+    "dashboard": "Grafana 仪表盘"
+  },
+  "notifications": {
+    "title": "通知渠道",
+    "addChannel": "添加渠道",
+    "test": "测试",
+    "testSent": "测试已发送",
+    "enable": "启用",
+    "disable": "停用",
+    "enabled": "启用",
+    "disabled": "停用",
+    "delete": "删除",
+    "deleteConfirm": "确认删除该渠道?",
+    "channelTypes": {
+      "telegram": "Telegram Bot",
+      "feishu": "飞书 Webhook",
+      "wechat_work": "企业微信 Webhook",
+      "webhook": "通用 Webhook"
+    },
+    "empty": "尚未配置通知渠道",
+    "configJsonPlaceholder": "{\"bot_token\": \"...\", \"chat_id\": \"...\"}"
+  },
+  "settings": {
+    "title": "设置",
+    "thresholds": "LLM 成本告警阈值",
+    "dailyUsd": "每日阈值(USD)",
+    "monthlyUsd": "每月阈值(USD)",
+    "perBookUsd": "单书阈值(USD)",
+    "spikeMultiplier": "突增倍数(对比过去 7 天同时段平均)",
+    "saving": "保存中...",
+    "saved": "已保存",
+    "saveError": "保存失败",
+    "systemInfo": "系统信息",
+    "doctorLoading": "检查中...",
+    "doctorUnreachable": "无法连接 Gateway",
+    "configReadonly": "当前配置(只读)",
+    "overallStatus": "整体状态"
+  },
+  "agents": {
+    "title": "Agents",
+    "subtitle": "实时 agent 注册表(v4 pipeline 端点)",
+    "refresh": "手动刷新",
+    "empty": "暂无注册的 agent",
+    "type": "类型",
+    "currentTask": "当前任务",
+    "lastHeartbeat": "心跳"
+  }
+}

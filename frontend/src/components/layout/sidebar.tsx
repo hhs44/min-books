@@ -11,27 +11,30 @@ import {
   Activity,
   Cpu,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
-const NAV = [
-  { href: "/", label: "书籍列表", icon: BookOpen },
-  { href: "/write", label: "写作工作台", icon: PenTool },
-  { href: "/state", label: "真相文件", icon: FileText },
-  { href: "/cost", label: "成本 & 监控", icon: BarChart3 },
-  { href: "/observability", label: "链路追踪", icon: Activity },
-  { href: "/agents", label: "Agents", icon: Cpu },
-  { href: "/notifications", label: "通知配置", icon: Bell },
-  { href: "/settings", label: "设置", icon: Settings },
-];
+const NAV_KEYS = [
+  { href: "/", key: "books", icon: BookOpen },
+  { href: "/write", key: "write", icon: PenTool },
+  { href: "/state", key: "state", icon: FileText },
+  { href: "/cost", key: "cost", icon: BarChart3 },
+  { href: "/observability", key: "observability", icon: Activity },
+  { href: "/agents", key: "agents", icon: Cpu },
+  { href: "/notifications", key: "notifications", icon: Bell },
+  { href: "/settings", key: "settings", icon: Settings },
+] as const;
 
 export function Sidebar({ className }: { className?: string }) {
+  const t = useTranslations("nav");
   const pathname = usePathname() ?? "";
   return (
     <nav className={cn("flex flex-col gap-1 p-4 bg-gray-50 border-r", className)}>
       <div className="text-2xl font-bold mb-6 px-3 text-gray-900">MinBook</div>
-      {NAV.map((item) => {
+      {NAV_KEYS.map((item) => {
         const Icon = item.icon;
-        const active = pathname === item.href || pathname.startsWith(item.href + "/");
+        const active =
+          pathname === item.href || pathname.startsWith(item.href + "/");
         return (
           <Link
             key={item.href}
@@ -44,7 +47,7 @@ export function Sidebar({ className }: { className?: string }) {
             )}
           >
             <Icon className="h-4 w-4" />
-            {item.label}
+            {t(item.key)}
           </Link>
         );
       })}

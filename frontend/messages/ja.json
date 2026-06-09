@@ -1,0 +1,140 @@
+{
+  "app": {
+    "name": "MinBook",
+    "description": "マルチエージェント小説執筆システム"
+  },
+  "nav": {
+    "books": "書籍一覧",
+    "write": "執筆ワークベンチ",
+    "state": "トゥルースファイル",
+    "cost": "コスト & 監視",
+    "observability": "トレーシング",
+    "agents": "Agents",
+    "notifications": "通知設定",
+    "settings": "設定"
+  },
+  "common": {
+    "save": "保存",
+    "cancel": "キャンセル",
+    "edit": "編集",
+    "delete": "削除",
+    "loading": "読み込み中...",
+    "error": "エラー",
+    "create": "新規",
+    "search": "検索",
+    "refresh": "更新",
+    "back": "戻る",
+    "confirm": "確認"
+  },
+  "auth": {
+    "login": "ログイン",
+    "logout": "ログアウト",
+    "logging_in": "ログイン中...",
+    "tokenPlaceholder": "JWT トークンを貼り付け...",
+    "tokenHint": "トークンが見つからない?",
+    "tokenHintDetails": "トークンは Gateway 起動時に自動生成されます。再起動で再生成されます。",
+    "viewToken": "確認: cat ~/.minbook/auth.token"
+  },
+  "home": {
+    "title": "私の書籍",
+    "newBook": "新規書籍",
+    "empty": "書籍がありません。CLI で作成してからページを更新してください。",
+    "loadError": "読み込み失敗"
+  },
+  "book": {
+    "writeNext": "次の章を書く",
+    "chapters": "章",
+    "noChapters": "章がありません",
+    "viewState": "トゥルースファイルを表示/編集",
+    "viewStyle": "スタイル分析"
+  },
+  "write": {
+    "title": "執筆ワークベンチ",
+    "triggerNew": "新しい章を開始",
+    "chapterNumber": "章番号",
+    "bookId": "書籍 ID",
+    "currentFocus": "作者の意図 / 現在の焦点",
+    "focusPlaceholder": "この章で表現したい内容を記述...",
+    "start": "書き始める",
+    "writing": "執筆中...",
+    "liveProgress": "リアルタイム進捗",
+    "current": "現在",
+    "streamOutput": "ストリーム出力"
+  },
+  "state": {
+    "title": "トゥルースファイル",
+    "currentState": "現在の状態",
+    "characterMatrix": "キャラクター行列",
+    "pendingHooks": "未回収の伏線",
+    "chapterSummaries": "章の要約",
+    "subplotBoard": "サブプロット",
+    "emotionalArcs": "感情曲線",
+    "particleLedger": "パーティクル元帳",
+    "missingBookId": "書籍詳細ページから移動するか、URL に ?bookId=... を追加してください。"
+  },
+  "cost": {
+    "title": "LLM コスト",
+    "today": "今日",
+    "thisWeek": "今週",
+    "thisMonth": "今月",
+    "thisYear": "今年",
+    "dailyChart": "日次コスト(過去 30 日)",
+    "topBooks": "書籍別コスト Top 10",
+    "recentCalls": "最近の LLM 呼び出し",
+    "noData": "データなし",
+    "noCalls": "呼び出しなし"
+  },
+  "observability": {
+    "title": "分散トレーシング",
+    "viewTrace": "Trace ID で表示",
+    "tracePlaceholder": "trace_id を入力(例: abc123...)",
+    "query": "検索",
+    "clear": "クリア",
+    "dashboard": "Grafana ダッシュボード"
+  },
+  "notifications": {
+    "title": "通知チャネル",
+    "addChannel": "チャネルを追加",
+    "test": "テスト",
+    "testSent": "テスト送信済み",
+    "enable": "有効化",
+    "disable": "無効化",
+    "enabled": "有効",
+    "disabled": "無効",
+    "delete": "削除",
+    "deleteConfirm": "削除を確認?",
+    "channelTypes": {
+      "telegram": "Telegram Bot",
+      "feishu": "Feishu Webhook",
+      "wechat_work": "WeChat Work Webhook",
+      "webhook": "汎用 Webhook"
+    },
+    "empty": "通知チャネルが設定されていません",
+    "configJsonPlaceholder": "{\"bot_token\": \"...\", \"chat_id\": \"...\"}"
+  },
+  "settings": {
+    "title": "設定",
+    "thresholds": "LLM コストアラートしきい値",
+    "dailyUsd": "日次しきい値(USD)",
+    "monthlyUsd": "月次しきい値(USD)",
+    "perBookUsd": "書籍別しきい値(USD)",
+    "spikeMultiplier": "スパイク倍率(過去 7 日平均比)",
+    "saving": "保存中...",
+    "saved": "保存しました",
+    "saveError": "保存失敗",
+    "systemInfo": "システム情報",
+    "doctorLoading": "確認中...",
+    "doctorUnreachable": "Gateway に到達できません",
+    "configReadonly": "現在の設定(読み取り専用)",
+    "overallStatus": "全体ステータス"
+  },
+  "agents": {
+    "title": "Agents",
+    "subtitle": "リアルタイムエージェント登録(v4 パイプライン)",
+    "refresh": "手動更新",
+    "empty": "登録されたエージェントがありません",
+    "type": "タイプ",
+    "currentTask": "現在のタスク",
+    "lastHeartbeat": "ハートビート"
+  }
+}
