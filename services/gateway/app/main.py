@@ -18,7 +18,7 @@ from minbook_otel.tracing import init_tracing, instrument_fastapi
 from .config import get_settings
 from .middleware.i18n import I18nMiddleware
 from .middleware.rate_limit import RateLimitMiddleware
-from .routes import auth, books, config, doctor, llm, notifications, style, write_proxy
+from .routes import auth, books, config, cost, doctor, llm, notifications, style, write_proxy
 
 settings = get_settings()
 common = get_common_settings()
@@ -74,6 +74,7 @@ app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(books.router, prefix="/api/books", tags=["books"])
 app.include_router(llm.router, prefix="/api/llm", tags=["llm"])
 app.include_router(config.router, prefix="/api/config", tags=["config"])
+app.include_router(cost.router, prefix="/api/cost", tags=["cost"])
 app.include_router(doctor.router, prefix="/api/doctor", tags=["doctor"])
 app.include_router(notifications.router, prefix="/api/notifications", tags=["notifications"])
 app.include_router(style.router, prefix="/api/books", tags=["style"])
