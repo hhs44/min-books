@@ -163,3 +163,60 @@ bash scripts/e2e-manual-phaseE.sh
 - v2 plan:`docs/superpowers/plans/2026-06-08-v2-core-services.md`
 - v2 spec:`docs/superpowers/specs/2026-06-08-minbooks-mas-architecture-v2.md`
 - v3 plan(后续):`docs/superpowers/plans/2026-06-08-v3-agents.md`(待写)
+
+## v3 阶段(agents 完成)
+
+v3 Phase A-D 完成 20 个 agent 模块 + 共享基础设施:
+
+### Agent 清单(20 个)
+
+| Service                | 端口 | Agent 数 | Agent                                                |
+| ---------------------- | ---- | -------- | ---------------------------------------------------- |
+| agent-planner-service  | 8003 | 4        | ArchitectAgent / PlannerAgent / ComposerAgent / FoundationReviewerAgent |
+| agent-writer-service   | 8004 | 7        | WriterAgent / PolisherAgent / LengthNormalizer / ConsolidatorAgent / ChapterAnalyzerAgent / StyleAnalyzer / ShortFictionWriterAgent |
+| agent-reviewer-service | 8005 | 9        | ContinuityAuditor / ReviserAgent / StateValidator / ObserverAgent / SettlerAgent / PostWriteValidator / AIGCDetector / SensitiveWordsDetector / RadarAgent |
+
+### v3 集成验证
+
+```bash
+# 27 项断言:8 服务 /health + 20 agents + 42 单元测试 + 3 个 svc user 写测试
+# + bug fix 1 (BaseAgent.to_card 警告消失) + bug fix 2 (密码认证失败消失)
+bash scripts/verify-v3.sh
+
+# 端到端 invoke 测试(每个 service 1 个 e2e — invoke → recall → LLM → store_episode → return)
+# 需 unset 代理或用 env -u
+for s in agent-planner agent-writer agent-reviewer; do
+  cd services/$s && env -u ALL_PROXY uv run --package minbook-${s//-/_} pytest tests/test_invoke_e2e.py -v
+done
+```
+
+### v3 关键修复(已 commit)
+
+1. **BaseAgent.to_card 改为 classmethod**(commit 46afd05)
+   - 原因:Python 3 没有 unbound method,`AgentClass.to_card(arg)` 把 `arg` 当 self
+   - 修复:`@classmethod def to_card(cls, service, endpoint="")`
+   - 影响:3 agent 服务注册 AgentCard 全部成功(警告消失)
+
+2. **03-users.sql 密码统一**(commit dcf1523)
+   - 原因:`PLACEHOLDER_PLANNER` 等占位密码与 MemoryClient fallback `'minbook_dev'` 不一致
+   - 修复:所有 9 个 svc user 改为 `'minbook_dev'`(与 .env POSTGRES_PASSWORD 一致)
+   - 生产:用户应自己用 `ALTER USER ... PASSWORD` 覆盖
+
+### v3 已知 defer(等 v4 plan 处理)
+
+- `pipeline-orchestrator /internal/orchestrator/agents/register` 返 404
+  - 当前 3 agent 服务 register_all 走 try/except fallback(只 log,不 crash)
+  - v4 plan 才补 orchestrator 路由
+- `GET /api/books/<id>/write/next` 仍 500(同上 v2 defer,等 v4)
+- Gateway `/api/agents/{name}/invoke` 路由 501 占位(v4 plan 接入 orchestrator)
+
+### v3 单元测试覆盖(42 = 7 + 13 + 22)
+
+| Service                | Tests | 覆盖                                                              |
+| ---------------------- | ----- | ----------------------------------------------------------------- |
+| agent-planner          | 7     | registry(2) + architect(1) + composer(2) + foundation_reviewer(2) |
+| agent-writer           | 13    | registry(1) + writer(2) + polisher(3) + length_normalizer(2) + consolidator(3) + style_analyzer(2) |
+| agent-reviewer         | 22    | registry(1) + continuity_auditor(3) + observer(2) + post_write_validator(3) + radar(2) + reviser(2) + settler(2) + state_validator(2) + aigc_sensitive(5) |
+
+3 个 e2e invoke 测试(`tests/test_invoke_e2e.py`,per service)补充完整链路覆盖
+(invoke → recall → LLM mock → store_episode → return),合计 45 测试。
