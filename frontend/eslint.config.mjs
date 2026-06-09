@@ -20,6 +20,15 @@ const eslintConfig = [
       "next-env.d.ts",
     ],
   },
+  {
+    rules: {
+      // The frontend integrates with a Pydantic backend; `any` is pragmatic
+      // for free-form response shapes from cost/recent-calls/snapshots.
+      "@typescript-eslint/no-explicit-any": "off",
+      // Allow unescaped entities (apostrophes etc.) in Chinese strings
+      "react/no-unescaped-entities": "off",
+    },
+  },
 ];
 
 export default eslintConfig;
