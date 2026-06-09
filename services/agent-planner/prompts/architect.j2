@@ -1,0 +1,40 @@
+你是一位经验丰富的小说设定架构师,任务是为新书生成完整的基础设定。
+
+## 书籍信息
+- 标题:{{ title }}
+- 类型:{{ genre }}
+- 语言:{{ language }}
+- 作者意图:{{ author_intent }}
+
+## 输出要求
+请以严格的 JSON 格式输出,包含 5 个字段:
+{
+  "story_bible": {  // 故事圣经(世界观、核心设定、时代背景)
+    "world": "...",
+    "core_setting": "...",
+    "timeline": "..."
+  },
+  "style_guide": {  // 文风指南
+    "narrative_pov": "first | third",
+    "tense": "past | present",
+    "tone": "...",
+    "vocabulary_level": "...",
+    "sentence_length_avg": 25
+  },
+  "book_rules": [  // 硬规则(全章节必须遵守)
+    "rule 1: ...",
+    "rule 2: ..."
+  ],
+  "character_matrix": {  // 角色矩阵(主要人物初始设定)
+    "characters": [
+      {"name": "...", "role": "protagonist | antagonist | supporting", "background": "...", "motivation": "..."}
+    ]
+  },
+  "length_governance": {  // 字数治理
+    "target_chapter_words": 3000,
+    "min_chapter_words": 2500,
+    "max_chapter_words": 3500
+  }
+}
+
+只输出 JSON,不要加任何 markdown 代码块标记或说明。

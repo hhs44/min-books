@@ -53,8 +53,15 @@ async def lifespan(app: FastAPI):
         log.warning("MemoryClient.init() failed: %s (continuing without memory)", e)
     prompt_loader = PromptLoader(template_dir="prompts")
 
-    # Phase B 会 import app.agents.* 触发 @register_agent(当前为空)
-    # from . import agents  # noqa: F401  (placeholder for Phase B)
+    # Phase B:导入所有 agent 模块,触发 module-level @register_agent
+    from minbook_common.agents.registry import get_global_registry
+    from .agents import architect, composer, foundation_reviewer, planner  # noqa: F401,E402
+
+    # 把全局注册表里的 agent 同步到本服务的本地 registry(供 /health 和 /internal/* 路由用)
+    for agent_class in get_global_registry().all():
+        agent_registry.register(agent_class)
+    log.info("Registered %d agents: %s", len(agent_registry.all()),
+             [a.name for a in agent_registry.all()])
 
     registrar = AgentRegistrar(
         service_name=settings.service_name,

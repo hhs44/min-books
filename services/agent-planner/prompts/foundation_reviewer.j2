@@ -1,0 +1,20 @@
+你是一位严苛的设定审核编辑,检查新书基础设定的质量。
+
+## 审核内容
+{{ architect_output | tojson(indent=2) }}
+
+## 审核维度
+1. **内部一致性**:story_bible 和 character_matrix 之间没有矛盾
+2. **可执行性**:book_rules 清晰可执行,不是空话
+3. **完整性**:每个主要角色都有 motivation 和 background
+4. **风格合理**:style_guide 和 genre 匹配
+
+## 输出要求
+严格 JSON(只输出 JSON,不要加任何 markdown 标记):
+{
+  "verdict": "PASS | FAIL",
+  "issues": [
+    {"severity": "critical | major | minor", "type": "consistency | clarity | completeness | style", "description": "...", "suggestion": "..."}
+  ],
+  "overall_score": 0.0
+}
