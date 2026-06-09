@@ -1,4 +1,14 @@
-"""agent-writer-service:写作类 agent 服务(v3 Phase A 骨架)。"""
+"""agent-writer-service:写作类 agent 服务(v3 Phase C)。
+
+含 7 个 agent:
+- WriterAgent:正文生成 + 字数治理
+- PolisherAgent:润色
+- LengthNormalizer:字数压缩/扩展
+- ConsolidatorAgent:章节合并(纯逻辑)
+- ChapterAnalyzerAgent:章节分析(情感曲线/节奏/关键词)
+- StyleAnalyzer:文风指纹(写 writer.style_corpus)
+- ShortFictionWriterAgent:短篇专用
+"""
 import logging
 import os
 from contextlib import asynccontextmanager
@@ -45,6 +55,27 @@ async def lifespan(app: FastAPI):
     except Exception as e:  # noqa: BLE001
         log.warning("MemoryClient.init() failed: %s (continuing without memory)", e)
     prompt_loader = PromptLoader(template_dir="prompts")
+
+    # Phase C: 导入所有 agent 模块,触发 module-level @register_agent
+    from minbook_common.agents.registry import get_global_registry
+    from .agents import (  # noqa: F401,E402
+        chapter_analyzer,
+        consolidator,
+        length_normalizer,
+        polisher,
+        short_fiction_writer,
+        style_analyzer,
+        writer,
+    )
+
+    # 把全局注册表里的 agent 同步到本服务的本地 registry(供 /health 和 /internal/* 用)
+    for agent_class in get_global_registry().all():
+        agent_registry.register(agent_class)
+    log.info(
+        "Registered %d agents: %s",
+        len(agent_registry.all()),
+        [a.name for a in agent_registry.all()],
+    )
 
     registrar = AgentRegistrar(
         service_name=settings.service_name,
