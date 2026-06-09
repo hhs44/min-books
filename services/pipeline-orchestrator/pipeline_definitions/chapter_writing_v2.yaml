@@ -1,0 +1,74 @@
+# services/pipeline-orchestrator/pipeline_definitions/chapter_writing_v2.yaml
+# 完整 DAG(对应 v2 spec §5.1 + §5.7)
+id: chapter_writing_v2
+description: 写一章长篇小说的标准流程(9 节点)
+version: 2
+
+nodes:
+  - id: plan
+    agent_ref: agent-planner-service.PlannerAgent
+    inputs_from: [book_settings, current_focus]
+    timeout_seconds: 60
+
+  - id: compose
+    agent_ref: agent-planner-service.ComposerAgent
+    inputs_from: [plan, truth_files]
+    timeout_seconds: 30
+
+  - id: write
+    agent_ref: agent-writer-service.WriterAgent
+    inputs_from: [compose, style_fingerprint, writer_style_corpus]
+    streaming: true
+    timeout_seconds: 300
+
+  - id: observe
+    agent_ref: agent-reviewer-service.ObserverAgent
+    inputs_from: [write]
+    parallel_group: post_write
+    timeout_seconds: 60
+
+  - id: audit
+    agent_ref: agent-reviewer-service.ContinuityAuditor
+    inputs_from: [write, truth_files]
+    parallel_group: post_write
+    timeout_seconds: 120
+
+  - id: settle
+    agent_ref: agent-reviewer-service.SettlerAgent
+    inputs_from: [observe]
+    parallel_group: post_write
+    timeout_seconds: 60
+
+  - id: revise
+    agent_ref: agent-reviewer-service.ReviserAgent
+    inputs_from: [write, audit]
+    condition: "audit.has_critical_issues == true"
+    timeout_seconds: 300
+
+  - id: validate
+    agent_ref: agent-reviewer-service.PostWriteValidator
+    inputs_from: [write, revise, settle]
+    timeout_seconds: 60
+
+  - id: save
+    type: function
+    function: save_chapter
+    inputs_from: [validate]
+
+edges:
+  - plan -> compose
+  - compose -> write
+  - write -> observe
+  - write -> audit
+  - observe -> settle
+  - audit -> revise
+  - write -> validate
+  - revise -> validate
+  - settle -> validate
+  - validate -> save
+
+config:
+  max_concurrent_nodes: 3
+  retry_policy:
+    max_attempts: 3
+    backoff: exponential
