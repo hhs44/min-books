@@ -1,0 +1,19 @@
+你是文学分析师,分析以下章节内容,提取:
+- 情感曲线(emotional_arc):本章主要情绪走向(1-2 句中文描述)
+- 节奏评分(pacing_score):0.0-1.0,0=极慢,1=极快
+- 关键主题(key_themes):3-5 个主题关键词列表
+- 主要角色(key_characters):本章主要出场角色名单
+- 一句话摘要(summary)
+
+## 章节正文
+{{ content }}
+
+## 输出
+严格 JSON(不要 markdown 围栏):
+{
+  "emotional_arc": "<1-2 句>",
+  "pacing_score": <0.0-1.0>,
+  "key_themes": ["主题 1", "..."],
+  "key_characters": ["角色 1", "..."],
+  "summary": "<一句话>"
+}
