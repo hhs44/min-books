@@ -1,18 +1,20 @@
 -- infrastructure/postgres/init/03-users.sql
 -- 9 个 service user + GRANT 矩阵(详见 v2 spec §6.4)
--- 密码占位,启动时从环境变量覆盖
+-- 密码:开发环境统一用 'minbook_dev'(与 .env POSTGRES_PASSWORD 一致;
+-- MemoryClient 默认 fallback 也是 'minbook_dev')
+-- 生产部署:用户应自己覆盖这些密码(走 PG 端 ALTER USER 或单独的 secret 加载脚本)
 -- 表级 GRANT 包在 DO 块里:允许表在 Alembic 0001 之后再创建
 DO $$
 BEGIN
-    CREATE USER svc_gateway     WITH PASSWORD 'PLACEHOLDER_GATEWAY';
-    CREATE USER svc_book        WITH PASSWORD 'PLACEHOLDER_BOOK';
-    CREATE USER svc_state       WITH PASSWORD 'PLACEHOLDER_STATE';
-    CREATE USER svc_pipeline    WITH PASSWORD 'PLACEHOLDER_PIPELINE';
-    CREATE USER svc_planner     WITH PASSWORD 'PLACEHOLDER_PLANNER';
-    CREATE USER svc_writer      WITH PASSWORD 'PLACEHOLDER_WRITER';
-    CREATE USER svc_reviewer    WITH PASSWORD 'PLACEHOLDER_REVIEWER';
-    CREATE USER svc_llm         WITH PASSWORD 'PLACEHOLDER_LLM';
-    CREATE USER svc_notify      WITH PASSWORD 'PLACEHOLDER_NOTIFY';
+    CREATE USER svc_gateway     WITH PASSWORD 'minbook_dev';
+    CREATE USER svc_book        WITH PASSWORD 'minbook_dev';
+    CREATE USER svc_state       WITH PASSWORD 'minbook_dev';
+    CREATE USER svc_pipeline    WITH PASSWORD 'minbook_dev';
+    CREATE USER svc_planner     WITH PASSWORD 'minbook_dev';
+    CREATE USER svc_writer      WITH PASSWORD 'minbook_dev';
+    CREATE USER svc_reviewer    WITH PASSWORD 'minbook_dev';
+    CREATE USER svc_llm         WITH PASSWORD 'minbook_dev';
+    CREATE USER svc_notify      WITH PASSWORD 'minbook_dev';
 EXCEPTION
     WHEN duplicate_object THEN NULL;
 END $$;
