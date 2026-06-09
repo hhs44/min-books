@@ -1,0 +1,23 @@
+你是文风分析师,从以下样本文中抽取作者的"文风指纹"。
+
+## 样本
+{{ sample_text }}
+
+## 分析维度
+- avg_sentence_length:平均句长(以汉字 / 单词计)
+- punctuation_style:标点风格("frequent_dashes" / "comma_heavy" / "minimalist" 等)
+- vocabulary_register:词汇层级("formal" / "colloquial" / "literary" / "mixed")
+- pacing:整体节奏("slow" / "moderate" / "fast")
+- voice:叙事声音特征(2-3 句中文描述)
+- signature_devices:常用修辞 / 写作手法 3-5 个
+
+## 输出
+严格 JSON(不要 markdown 围栏):
+{
+  "avg_sentence_length": <int>,
+  "punctuation_style": "<string>",
+  "vocabulary_register": "<string>",
+  "pacing": "<string>",
+  "voice": "<string>",
+  "signature_devices": ["...", "..."]
+}
