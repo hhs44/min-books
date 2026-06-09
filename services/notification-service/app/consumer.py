@@ -17,6 +17,8 @@ logger = logging.getLogger(__name__)
 
 async def start_consumer(nats: MinBookNATS):
     """启动所有订阅。"""
+    # 确保 JetStream stream 存在(v2 spec §3.2.5)
+    await nats.ensure_stream()
     # 订阅所有 alert 事件
     await nats.subscribe("minbook.alert.>", _handle_event("alert"))
     # 订阅 chapter.failed(独立 subject,虽然 alert.> 通常已包含,但显式订阅更安全)
