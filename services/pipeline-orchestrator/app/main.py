@@ -20,7 +20,9 @@ from .cron.stale_scanner import StaleScanner
 from .dag.loader import DAGLoader
 from .db import close_db, init_db
 from .registry.heartbeat import HeartbeatMonitor
+from .routes import agent_cards, dlq, pipeline, registry
 from .saga.dlq_publisher import DLQPublisher
+from . import state
 
 settings = get_settings()
 setup_logging(level=os.environ.get("LOG_LEVEL", "INFO"))
@@ -29,19 +31,15 @@ init_tracing(settings.service_name, settings.service_version)
 logger = logging.getLogger(__name__)
 
 # 全局共享资源
-dag_loader: DAGLoader | None = None
-nats: MinBookNATS | None = None
 heartbeat_monitor: HeartbeatMonitor | None = None
-dlq_publisher: DLQPublisher | None = None
 stale_scanner: StaleScanner | None = None
 dlq_syncer: DLQSyncer | None = None
-scheduler_queue: asyncio.Queue | None = None
 _background_tasks: list[asyncio.Task] = []
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global dag_loader, nats, heartbeat_monitor, dlq_publisher, stale_scanner, dlq_syncer, scheduler_queue, _background_tasks
+    global heartbeat_monitor, stale_scanner, dlq_syncer, _background_tasks
 
     logger.info(f"[startup] {settings.service_name} v{settings.service_version}")
 
@@ -53,52 +51,52 @@ async def lifespan(app: FastAPI):
         logger.exception(f"[startup] DB init failed (continuing without DB): {e}")
 
     # 2. load DAGs
-    dag_loader = DAGLoader(definitions_dir=settings.dag_definitions_dir)
+    state.dag_loader = DAGLoader(definitions_dir=settings.dag_definitions_dir)
     try:
-        await dag_loader.load_all()
-        logger.info(f"[startup] DAGs loaded: {dag_loader.list_ids()}")
+        await state.dag_loader.load_all()
+        logger.info(f"[startup] DAGs loaded: {state.dag_loader.list_ids()}")
     except Exception as e:
         logger.exception(f"[startup] DAG loading failed: {e}")
 
     # 3. NATS
     try:
-        nats = MinBookNATS(
+        state.nats = MinBookNATS(
             url=os.environ.get("NATS_URL", "nats://nats:4222"),
             service_name=settings.service_name,
             service_version=settings.service_version,
         )
-        await nats.connect()
-        await nats.ensure_stream()
+        await state.nats.connect()
+        await state.nats.ensure_stream()
         logger.info("[startup] NATS connected")
     except Exception as e:
         logger.exception(f"[startup] NATS init failed: {e}")
-        nats = None
+        state.nats = None
 
     # 4. DLQ publisher + monitor components
-    if nats:
-        dlq_publisher = DLQPublisher(nats=nats)
-        # 订阅 DLQ 事件做 syncing
-        try:
-            await nats.subscribe("minbook.dlq.pipeline.failed", dlq_syncer._handle_pipeline_failed if dlq_syncer else _noop_handler)
-            await nats.subscribe("minbook.dlq.node.failed", dlq_syncer._handle_node_failed if dlq_syncer else _noop_handler)
-        except Exception as e:
-            logger.debug(f"NATS subscribe failed (non-fatal in dev): {e}")
-
     heartbeat_monitor = HeartbeatMonitor(inactive_threshold_seconds=settings.agent_inactive_threshold_seconds)
     stale_scanner = StaleScanner(stale_threshold_seconds=settings.pipeline_stale_threshold_seconds)
     dlq_syncer = DLQSyncer()
 
-    scheduler_queue = asyncio.Queue()
+    state.scheduler_queue = asyncio.Queue()
+
+    if state.nats:
+        state.dlq_publisher = DLQPublisher(nats=state.nats)
+        # 订阅 DLQ 事件做 syncing
+        try:
+            await state.nats.subscribe("minbook.dlq.pipeline.failed", dlq_syncer._handle_pipeline_failed)
+            await state.nats.subscribe("minbook.dlq.node.failed", dlq_syncer._handle_node_failed)
+        except Exception as e:
+            logger.debug(f"NATS subscribe failed (non-fatal in dev): {e}")
 
     # 5. 启动后台任务
-    if nats:
+    if state.nats:
         _background_tasks.append(asyncio.create_task(_run_scheduler()))
     _background_tasks.append(asyncio.create_task(heartbeat_monitor.run_forever()))
     _background_tasks.append(asyncio.create_task(stale_scanner.run_forever(scan_interval=settings.stale_scan_interval_seconds)))
     _background_tasks.append(asyncio.create_task(dlq_syncer.run_forever()))
 
     # 6. 订阅 cancel 事件
-    if nats:
+    if state.nats:
         async def _handle_cancel_event(event_data: dict):
             run_id = event_data.get("data", {}).get("pipeline_run_id")
             reason = event_data.get("data", {}).get("reason", "user_requested")
@@ -107,7 +105,7 @@ async def lifespan(app: FastAPI):
                 await cancel_run(run_id, reason)
 
         try:
-            await nats.subscribe("minbook.pipeline.*.cancel", _handle_cancel_event)
+            await state.nats.subscribe("minbook.pipeline.*.cancel", _handle_cancel_event)
         except Exception as e:
             logger.debug(f"NATS cancel subscribe failed: {e}")
 
@@ -128,9 +126,9 @@ async def lifespan(app: FastAPI):
             logger.debug(f"Background task exit: {e}")
     _background_tasks.clear()
 
-    if nats:
+    if state.nats:
         try:
-            await nats.close()
+            await state.nats.close()
         except Exception:
             pass
 
@@ -144,9 +142,11 @@ async def _run_scheduler():
     """从 queue 取 PipelineRun,执行 DAG。"""
     from .dag.executor import DAGExecutor
     while True:
-        run = await scheduler_queue.get()
+        run = await state.scheduler_queue.get()
         try:
-            executor = DAGExecutor(run, dag_loader, nats, dlq_publisher)  # type: ignore
+            executor = DAGExecutor(
+                run, state.dag_loader, state.nats, state.dlq_publisher
+            )
             # 同步执行(单次 scheduler 串行;多 run 并发由 queue + 多 worker 扩展)
             await executor.execute()
         except Exception as e:
@@ -165,6 +165,12 @@ app = FastAPI(
 instrument_fastapi(app)
 app.add_middleware(InternalAuthMiddleware)
 
+# 路由(v4 §Phase D Tasks 10-13)
+app.include_router(pipeline.router, prefix="/internal/pipeline", tags=["pipeline"])
+app.include_router(registry.router, prefix="/internal/orchestrator/agents", tags=["registry"])
+app.include_router(agent_cards.router, prefix="/internal/orchestrator/agents", tags=["cards"])
+app.include_router(dlq.router, prefix="/internal/dlq", tags=["dlq"])
+
 
 @app.get("/health")
 async def health():
@@ -172,7 +178,7 @@ async def health():
         "status": "healthy",
         "service": settings.service_name,
         "version": settings.service_version,
-        "loaded_dags": dag_loader.list_ids() if dag_loader else [],
+        "loaded_dags": state.dag_loader.list_ids() if state.dag_loader else [],
     }
 
 

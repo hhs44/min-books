@@ -64,7 +64,13 @@ async def _execute_agent(
 
     # 拼 invoke URL: /internal/{service_short}/invoke
     # 例: agent-planner-service → /internal/planner/invoke
-    service_short = service_name.replace("-service", "")
+    # service_short 是 v3 启动时各 agent 服务配的(planner / writer / reviewer)
+    SERVICE_SHORT_MAP = {
+        "agent-planner-service": "planner",
+        "agent-writer-service": "writer",
+        "agent-reviewer-service": "reviewer",
+    }
+    service_short = SERVICE_SHORT_MAP.get(service_name) or service_name.replace("-service", "")
     invoke_url = f"{endpoint}/internal/{service_short}/invoke"
 
     # idempotency key
@@ -84,7 +90,7 @@ async def _execute_agent(
                 "X-Service-Id": "pipeline-orchestrator",
                 "Idempotency-Key": idempotency_key,
             },
-            timeout=node.timeout_seconds or timeout,
+            timeout=getattr(node, "timeout_seconds", None) or timeout,
         )
         r.raise_for_status()
         result = r.json()

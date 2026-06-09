@@ -25,8 +25,10 @@ from .routes import (
     config,
     cost,
     doctor,
+    dlq,
     llm,
     notifications,
+    pipeline,
     state,
     style,
     write_proxy,
@@ -93,6 +95,8 @@ app.include_router(style.router, prefix="/api/books", tags=["style"])
 app.include_router(write_proxy.router, prefix="/api/books", tags=["write"])
 app.include_router(state.router, prefix="/api/books", tags=["state"])
 app.include_router(agents.router, prefix="/api/agents", tags=["agents"])
+app.include_router(pipeline.router, prefix="/api/books", tags=["pipeline"])
+app.include_router(dlq.router, prefix="/api/dlq", tags=["dlq"])
 
 
 @app.get("/health")
