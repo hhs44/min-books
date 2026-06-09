@@ -43,7 +43,8 @@ class AgentRegistrar:
     async def register_all(self, registry: AgentRegistry) -> None:
         """注册本服务所有 agent。"""
         for agent_class in registry.all():
-            card = agent_class.to_card(self.service_name, self.service_endpoint)
+            # endpoint 在 invoke 时才有意义;register/heartbeat 阶段只传 service。
+            card = agent_class.to_card(self.service_name)
             try:
                 r = await self._get_client().post(
                     f"{self.orchestrator_url}/internal/orchestrator/agents/register",
@@ -67,9 +68,8 @@ class AgentRegistrar:
         while True:
             try:
                 for agent_class in registry.all():
-                    card = agent_class.to_card(
-                        self.service_name, self.service_endpoint,
-                    )
+                    # 心跳只关心 service + agent_id + version;不传 endpoint。
+                    card = agent_class.to_card(self.service_name)
                     r = await self._get_client().post(
                         f"{self.orchestrator_url}/internal/orchestrator/agents/{card.agent_id}/heartbeat",
                         timeout=5.0,

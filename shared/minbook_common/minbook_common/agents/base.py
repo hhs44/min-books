@@ -78,17 +78,26 @@ class BaseAgent(ABC):
         """加载程序性记忆(prompt 模板)。"""
         return await self.memory.load_procedural(template_name)
 
-    def to_card(self, service: str, endpoint: str) -> AgentCard:
-        """生成本 agent 的 AgentCard(用于向 orchestrator 注册)。"""
+    @classmethod
+    def to_card(cls, service: str, endpoint: str = "") -> AgentCard:
+        """生成本 agent 的 AgentCard(用于向 orchestrator 注册)。
+
+        endpoint 仅在 agent invoke 端点已知时传入;registration/heartbeat
+        阶段不需要,留空字符串。
+
+        实现为 classmethod,让 `AgentClass.to_card(service_name)` 在 Python 3 下
+        正常工作(Python 3 没有 unbound method,函数需要显式 self;classmethod
+        把 cls 自动绑定为 agent_class)。
+        """
         return AgentCard(
-            agent_id=f"{service}.{self.name}.{self.version}",
+            agent_id=f"{service}.{cls.name}.{cls.version}",
             service=service,
-            name=self.name,
-            version=self.version,
-            capabilities=list(self.capabilities),
+            name=cls.name,
+            version=cls.version,
+            capabilities=list(cls.capabilities),
             inputs={},  # 子类可覆盖
             outputs={},
-            memory_layers=list(self.memory_layers),
+            memory_layers=list(cls.memory_layers),
             can_call=["llm-gateway", "state-service"],
             sla={"p95_latency_ms": 30000, "max_concurrent": 3},
         )
