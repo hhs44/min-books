@@ -1,14 +1,16 @@
-"""LLM chat 端点(详见 v2 plan §Phase B Task 16)。
+"""LLM chat 端点(详见 v2 plan §Phase B Task 16 + v3 Phase A Task 7 增补)。
 
 - POST /internal/llm/chat
-- 支持 Idempotency-Key(Redis 24h 缓存)
+- POST /internal/llm/embed   (v3 Phase A 增补,供 MemoryClient 用)
+- 支持 Idempotency-Key(Redis 24h 缓存,仅 /chat)
 - 接受 5 个 X-* 跟踪 header
 - OTel span + cost 记录
 """
 import logging
+import os
 
-from fastapi import APIRouter, Header
-from fastapi.responses import StreamingResponse
+from fastapi import APIRouter, Header, HTTPException
+from fastapi.responses import JSONResponse, StreamingResponse
 from minbook_common.models import LLMChatRequest, LLMChatResponse
 from opentelemetry import trace
 
@@ -124,3 +126,46 @@ async def chat(
         )
         log.exception("LLM call failed: provider=%s model=%s", provider_name, body.model)
         raise
+
+
+@router.post("/embed", response_model=None)
+async def embed(body: dict):
+    """生成 embedding vector(供 agent MemoryClient 用,v3 Phase A 增补)。
+
+    Body: {"model": "text-embedding-3-small", "input": "...", "provider": "openai"}
+
+    - 优先用 OpenAI 官方 SDK(text-embedding-3-small,1536 维)
+    - 若 OPENAI_API_KEY 未设置,返 503(让 caller 走降级)
+    """
+    from openai import AsyncOpenAI  # 延迟 import,避免主路径依赖
+
+    model = body.get("model", "text-embedding-3-small")
+    text = body.get("input", "")
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        raise HTTPException(
+            status_code=503,
+            detail="OPENAI_API_KEY not configured; embed endpoint unavailable",
+        )
+    if not text:
+        raise HTTPException(status_code=400, detail="input is required")
+
+    try:
+        client = AsyncOpenAI(api_key=api_key, timeout=30.0)
+        resp = await client.embeddings.create(model=model, input=text)
+        embedding = resp.data[0].embedding
+        return JSONResponse(
+            {
+                "embedding": embedding,
+                "model": resp.model,
+                "usage": {
+                    "prompt_tokens": resp.usage.prompt_tokens,
+                    "total_tokens": resp.usage.total_tokens,
+                },
+            }
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        log.exception("embed endpoint failed: model=%s", model)
+        raise HTTPException(status_code=502, detail=f"embed upstream failed: {type(e).__name__}: {e}")
