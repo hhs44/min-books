@@ -91,6 +91,8 @@ services:
     env_file: ../.env
     ports:
       - "127.0.0.1:8000:8000"
+    volumes:
+      - ~/.minbook:/home/minbook/.minbook  # let container-generated JWT token be visible on host
     depends_on:
       postgres: { condition: service_healthy }
       redis:    { condition: service_healthy }
