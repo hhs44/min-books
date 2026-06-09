@@ -11,6 +11,9 @@ dependencies = [
     "nats-py>=2.6",
     "fastapi>=0.110",
     "starlette>=0.36",
+    # v3 Phase A:shared agent 基础设施需要
+    "jinja2>=3.1",     # PromptLoader
+    "asyncpg>=0.29",   # MemoryClient (PG pgvector)
     # minbook-db 也依赖本包(共享 Settings),所以不强加反向依赖。
 ]
 
