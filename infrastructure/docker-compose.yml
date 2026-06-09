@@ -85,9 +85,8 @@ services:
     environment:
       OTEL_SERVICE_NAME: gateway
       SERVICE_PORT: "8000"
-      JWT_SECRET: ${JWT_SECRET}
-      SERVICE_SECRET: ${SERVICE_SECRET}
       ALLOW_LOOPBACK_BYPASS: ${ALLOW_LOOPBACK_BYPASS:-true}
+      # JWT_SECRET + SERVICE_SECRET 走 env_file(避免 shell 空值覆盖)
     env_file: ../.env
     ports:
       - "127.0.0.1:8000:8000"
@@ -109,7 +108,7 @@ services:
     environment:
       OTEL_SERVICE_NAME: state-service
       SERVICE_PORT: "8007"
-      SERVICE_SECRET: ${SERVICE_SECRET}
+      # JWT_SECRET + SERVICE_SECRET 走 env_file
     env_file: ../.env
     ports:
       - "127.0.0.1:8007:8007"
@@ -127,7 +126,7 @@ services:
     environment:
       OTEL_SERVICE_NAME: llm-gateway
       SERVICE_PORT: "8006"
-      SERVICE_SECRET: ${SERVICE_SECRET}
+      # JWT_SECRET + SERVICE_SECRET 走 env_file
     env_file: ../.env
     ports:
       - "127.0.0.1:8006:8006"
@@ -146,7 +145,7 @@ services:
     environment:
       OTEL_SERVICE_NAME: notification-service
       SERVICE_PORT: "8008"
-      SERVICE_SECRET: ${SERVICE_SECRET}
+      # JWT_SECRET + SERVICE_SECRET 走 env_file
     env_file: ../.env
     ports:
       - "127.0.0.1:8008:8008"
@@ -165,7 +164,7 @@ services:
     environment:
       OTEL_SERVICE_NAME: agent-planner-service
       SERVICE_PORT: "8003"
-      SERVICE_SECRET: ${SERVICE_SECRET}
+      # JWT_SECRET + SERVICE_SECRET 走 env_file
     env_file: ../.env
     ports:
       - "127.0.0.1:8003:8003"
@@ -185,7 +184,7 @@ services:
     environment:
       OTEL_SERVICE_NAME: agent-writer-service
       SERVICE_PORT: "8004"
-      SERVICE_SECRET: ${SERVICE_SECRET}
+      # JWT_SECRET + SERVICE_SECRET 走 env_file
     env_file: ../.env
     ports:
       - "127.0.0.1:8004:8004"
@@ -205,7 +204,7 @@ services:
     environment:
       OTEL_SERVICE_NAME: agent-reviewer-service
       SERVICE_PORT: "8005"
-      SERVICE_SECRET: ${SERVICE_SECRET}
+      # JWT_SECRET + SERVICE_SECRET 走 env_file
     env_file: ../.env
     ports:
       - "127.0.0.1:8005:8005"
@@ -226,7 +225,7 @@ services:
     environment:
       OTEL_SERVICE_NAME: pipeline-orchestrator
       SERVICE_PORT: "8002"
-      SERVICE_SECRET: ${SERVICE_SECRET}
+      # JWT_SECRET + SERVICE_SECRET 走 env_file
     env_file: ../.env
     ports:
       - "127.0.0.1:8002:8002"
