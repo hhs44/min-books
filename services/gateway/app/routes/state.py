@@ -2,10 +2,15 @@
 
 - /api/books/{book_id}/state/{file_type}              GET  → state-service /internal/state/{book_id}/truth/{file_type}
 - /api/books/{book_id}/state/{file_type}              PUT  → state-service /internal/state/{book_id}/truth/{file_type}
+- /api/books/{book_id}/state/snapshots                GET  → state-service /internal/state/{book_id}/snapshots
 - /api/books/{book_id}/snapshots                      GET  → state-service /internal/state/{book_id}/snapshots
 - /api/books/{book_id}/snapshots                      POST → state-service /internal/state/{book_id}/snapshot
 
 路径与 state-service 对齐(/internal/state/{book_id}/truth/{file_type} 含 book_id)。
+
+⚠️ 修复 v2-PhaseC bug:`/state/snapshots` 之前会错误匹配 `/{file_type}` 真相文件路由,
+导致 truth file_type=validation 400 → 500(签名响应未透传)。现在显式列出 snapshots 路由,
+FastAPI 按声明顺序优先匹配。
 """
 import json
 from typing import Any
@@ -20,6 +25,22 @@ from ..config import get_settings
 
 router = APIRouter()
 settings = get_settings()
+
+
+# ⚠️ 必须放在 /state/{file_type} 之前,否则会被 file_type 路由吞掉
+@router.get("/{book_id}/state/snapshots")
+async def list_snapshots_via_state(
+    book_id: UUID, request: Request, user=Depends(verify_user_token)
+):
+    """v2 spec §11:/api/books/{id}/state/snapshots 列出快照。"""
+    limit = request.query_params.get("limit", "20")
+    async with SignedHTTPClient("gateway") as client:
+        r = await client.get(
+            f"{settings.state_service_url}/internal/state/{book_id}/snapshots",
+            params={"limit": limit},
+        )
+        r.raise_for_status()
+        return r.json()
 
 
 @router.get("/{book_id}/state/{file_type}")
@@ -56,6 +77,7 @@ async def update_truth(
 
 @router.get("/{book_id}/snapshots")
 async def list_snapshots(book_id: UUID, request: Request, user=Depends(verify_user_token)):
+    """兼容路由(无 /state/ 前缀),与 /state/snapshots 等价。"""
     limit = request.query_params.get("limit", "20")
     async with SignedHTTPClient("gateway") as client:
         r = await client.get(
