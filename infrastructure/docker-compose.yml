@@ -229,6 +229,9 @@ services:
     env_file: ../.env
     ports:
       - "127.0.0.1:8002:8002"
+    volumes:
+      # DAG YAML 定义文件(v4 Phase A:chapter_writing_v2.yaml)
+      - ../services/pipeline-orchestrator/pipeline_definitions:/app/pipeline_definitions:ro
     depends_on:
       postgres: { condition: service_healthy }
       nats:     { condition: service_healthy }
