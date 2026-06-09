@@ -1,9 +1,9 @@
-"""API Gateway:对外 /api/* 入口(详见 v2 plan §Phase A)。
+"""API Gateway:对外 /api/* 入口(详见 v2 plan §Phase A + Phase C)。
 
 - 鉴权(InternalAuthMiddleware 来自 minbook-common,只验 /internal/*)
 - 限流(rate_limit 中间件,Redis 滑动窗口)
 - i18n(从 Accept-Language 解析 locale)
-- 路由(8 组:auth/books/llm/config/doctor/notifications/style/write_proxy)
+- 路由(9 组:auth/books/llm/config/cost/doctor/notifications/state/style/write_proxy)
 """
 import os
 import sys
@@ -18,7 +18,18 @@ from minbook_otel.tracing import init_tracing, instrument_fastapi
 from .config import get_settings
 from .middleware.i18n import I18nMiddleware
 from .middleware.rate_limit import RateLimitMiddleware
-from .routes import auth, books, config, cost, doctor, llm, notifications, style, write_proxy
+from .routes import (
+    auth,
+    books,
+    config,
+    cost,
+    doctor,
+    llm,
+    notifications,
+    state,
+    style,
+    write_proxy,
+)
 
 settings = get_settings()
 common = get_common_settings()
@@ -69,7 +80,7 @@ app.add_middleware(
 )
 app.add_middleware(InternalAuthMiddleware)
 
-# 路由(8 组,9 个 include_router 调用 —— style 和 write_proxy 共享 /api/books 前缀)
+# 路由(9 组,10 个 include_router 调用 —— style / write_proxy / state 共享 /api/books 前缀)
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(books.router, prefix="/api/books", tags=["books"])
 app.include_router(llm.router, prefix="/api/llm", tags=["llm"])
@@ -79,6 +90,7 @@ app.include_router(doctor.router, prefix="/api/doctor", tags=["doctor"])
 app.include_router(notifications.router, prefix="/api/notifications", tags=["notifications"])
 app.include_router(style.router, prefix="/api/books", tags=["style"])
 app.include_router(write_proxy.router, prefix="/api/books", tags=["write"])
+app.include_router(state.router, prefix="/api/books", tags=["state"])
 
 
 @app.get("/health")
