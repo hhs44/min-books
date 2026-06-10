@@ -7,6 +7,7 @@ SERVICE_PORTS = {
     "state-service": 8007,
     "llm-gateway": 8006,
     "notification-service": 8008,
+    "book-service": 8001,
     "agent-planner-service": 8003,
     "agent-writer-service": 8004,
     "agent-reviewer-service": 8005,

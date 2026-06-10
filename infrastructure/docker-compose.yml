@@ -154,6 +154,24 @@ services:
       nats:     { condition: service_healthy }
       otel-collector: { condition: service_started }
 
+  # === book-service(plan v6 Phase B)===
+  book-service:
+    build:
+      context: ..
+      dockerfile: services/book-service/Dockerfile
+      args:
+        SERVICE_NAME: book-service
+    environment:
+      OTEL_SERVICE_NAME: book-service
+      SERVICE_PORT: "8001"
+      # JWT_SECRET + SERVICE_SECRET 走 env_file
+    env_file: ../.env
+    ports:
+      - "127.0.0.1:8001:8001"
+    depends_on:
+      postgres: { condition: service_healthy }
+      otel-collector: { condition: service_started }
+
   # === 3 个 agent 服务(plan v3)===
   agent-planner-service:
     build:
