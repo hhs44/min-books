@@ -12,6 +12,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Server 组件能读 cookie;middleware 已注入,这里取不到 header,
+  // 用环境变量作为 SSR 兜底,客户端 hydrate 后 Providers 会同步。
   return (
     <html lang="zh" suppressHydrationWarning>
       <body className="antialiased">
