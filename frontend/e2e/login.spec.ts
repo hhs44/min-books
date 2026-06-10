@@ -28,8 +28,11 @@ test.describe("Login page", () => {
   });
 
   test("home page redirects to login or shows books", async ({ page }) => {
+    // v6 Phase C: / → 307 /zh → middleware rewrite 到 /(dashboard)
     await page.goto("/");
     // Without auth, may show error alert or redirect; just verify it loaded
     await expect(page.locator("body")).toBeVisible();
+    // URL 应该最终在 /zh/(可能是 /zh/login, /zh/, 等)
+    await expect(page).toHaveURL(/\/(zh|en|ja)(\/.*)?$/);
   });
 });

@@ -26,11 +26,13 @@ test.describe("Write workbench", () => {
   });
 
   test("navigation to write via sidebar works", async ({ page }) => {
-    await page.goto("/");
-    // Sidebar nav link
-    const writeLink = page.getByRole("link", { name: "写作工作台" });
-    await expect(writeLink).toBeVisible();
+    // v6 Phase C: / → 307 /zh, sidebar 仍是中文(默认 locale)
+    await page.goto("/zh/");
+    // Sidebar nav link(更宽松的 selector,因为 next-intl 文本在嵌套 span 里)
+    const writeLink = page.locator("nav a").filter({ hasText: "写作工作台" });
+    await expect(writeLink).toBeVisible({ timeout: 10_000 });
     await writeLink.click();
-    await expect(page).toHaveURL("/write");
+    // 跳转到 /zh/write(middleware 重写,URL 保留 /zh/ 前缀)
+    await expect(page).toHaveURL(/\/(zh|)\/write\/?$/);
   });
 });
